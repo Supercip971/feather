@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 namespace fsl
 {
 
@@ -184,6 +185,8 @@ namespace fsl
 
     uint32_t feather_lexer::get_context_at(uint64_t line)
     {
+       
+        
         uint64_t current_context_count = 0;
         for (int i = 0; i < item_c; i++)
         {
@@ -191,7 +194,38 @@ namespace fsl
             {
                 return current_context_count;
             }
-            if (items[i].type == FEATHER_DELIMITOR)
+            if (sys_type[items[i].subtype][0] == '{' || sys_type[items[i].subtype][0] == '}')
+            {
+
+                if (is_open_delimitor(items[i]))
+                {
+                    current_context_count++;
+                }
+                else
+                {
+                    current_context_count--;
+                }
+            }
+        }
+
+        return current_context_count;
+    }
+    uint32_t feather_lexer::get_context_at(uint64_t line, uint64_t position)
+    {
+       
+        
+        uint64_t current_context_count = 0;
+        for (int i = 0; i < item_c; i++)
+        {
+            if (items[i].line == line && items[i].position > position)
+            {
+                return current_context_count;
+            }
+            if (items[i].line > line)
+            {
+                return current_context_count;
+            }
+            if (sys_type[items[i].subtype][0] == '{' || sys_type[items[i].subtype][0] == '}')
             {
 
                 if (is_open_delimitor(items[i]))

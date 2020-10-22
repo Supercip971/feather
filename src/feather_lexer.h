@@ -33,7 +33,6 @@ namespace fsl
         char *copy;
         void fill_lines();
         void read_line_data();
-        uint32_t get_context_at(uint64_t line);
         uint64_t get_word_count();
         void init_elements();
         void list_context();
@@ -42,6 +41,8 @@ namespace fsl
     public:
         void parse(char *data);
         perline_information *generate_information();
+        uint32_t get_context_at(uint64_t line);
+        uint32_t get_context_at(uint64_t line, uint64_t position);
         uint64_t get_line_count();
     };
 
