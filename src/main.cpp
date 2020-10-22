@@ -14,7 +14,6 @@ int main()
 
     fsl::feather_vm vm;
     vm.init(feather_code);
-    printf("hello world");
-
+    vm.run();
     return 0;
 }
