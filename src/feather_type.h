@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdlib>
 #include <stdint.h>
 
 static const char *sys_type[] = {
@@ -66,5 +67,36 @@ namespace fsl
         feather_lexer_item *litem[64];
         uint64_t felment_length = 0;
         feather_element_item *felment[32];
+    };
+
+    struct feather_h_element
+    {
+        const char *name;
+        uint64_t value;
+        uint64_t type;
+    };
+
+    enum feather_element_types
+    {
+        FEATHER_VAR_INT = 0,
+        FEATHER_VAR_STRING = 1,
+        FEATHER_VAR_CHAR = 2,
+        FEATHER_VAR_FLOAT = 3,
+        FEATHER_VAR_ADDRESS = 4,
+        FEATHER_FUNCTION = 5,
+
+    };
+    template <class T>
+    class feather_list
+    {
+
+    public:
+        uint64_t length = 0;
+        T *elements;
+        void increase_size(uint64_t added_length)
+        {
+            length += added_length;
+            elements = (T *)realloc(elements, sizeof(T) * length);
+        }
     };
 } // namespace fsl
