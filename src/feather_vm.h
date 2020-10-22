@@ -13,12 +13,16 @@ namespace fsl
         feather_context *parent;
         feather_list<feather_h_element> element;
         uint64_t start_line = 0;
+        uint64_t current_line = 0;
+        uint64_t next_line = 0;
         perline_information *plifo;
         feather_lexer *lex;
         uint64_t context_offset_start;
+        void interpret_line();
 
     public:
         feather_h_element *find_element(const char *element_name);
+        feather_context *find_context(int line);
         // parent_context = nullptr when it is the main context
         feather_context();
         feather_context(perline_information *perline_info, uint64_t context_line_start, feather_context *parent_context, feather_lexer *lexer);
