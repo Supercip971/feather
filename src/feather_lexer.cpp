@@ -57,7 +57,7 @@ namespace fsl
                 (*current_position)++;
                 break;
             }
-            if (data_copy[*current_position] == ';')
+            if (data_copy[*current_position] == ';') // line break
             {
                 eol = true;
                 if (current_length != 1)
@@ -162,6 +162,7 @@ namespace fsl
                 printf("[number] %s\n", entry_to_print->data);
             }
         }
+        global_info = info;
     }
     bool lexer::is_only_number(char *dat)
     {
@@ -188,22 +189,24 @@ namespace fsl
         uint64_t last_idex = 0;
         feather_lexer_info *information = new feather_lexer_info;
         information->entry = new feather_lexer_entry[max_word_count];
+
         char *result = next_word(&current_idex);
         while (result != nullptr)
         {
             feather_lexer_entry *entry_to_edit = &information->entry[current_entry];
             entry_to_edit->position = current_idex;
+            entry_to_edit->entry_id = current_entry;
             entry_to_edit->line = line_position_from_index(current_idex);
             if (is_an_operator(result))
             {
-                entry_to_edit->subtype = feather_operator_list.find_from_id(result); // later we will check for func or other declaration
+                entry_to_edit->subtype = feather_operator_list.find_from_id_verification(result, lexer_feather_map_verification); // later we will check for func or other declaration
 
                 entry_to_edit->type = TYPE_OPERATOR;
             }
             else if (is_an_specific_item(result))
             {
                 entry_to_edit->type = TYPE_SPECIFIC;
-                entry_to_edit->subtype = feather_specific_item_list.find_from_id(result); // later we will check for func or other declaration
+                entry_to_edit->subtype = feather_specific_item_list.find_from_id_verification(result, lexer_feather_map_verification); // later we will check for func or other declaration
             }
             else if (is_an_delimitor(result))
             {

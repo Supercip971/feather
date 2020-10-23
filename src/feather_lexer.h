@@ -10,6 +10,7 @@ namespace fsl
         char *data;
         uint64_t position;
         uint64_t line;
+        uint64_t entry_id;
         feather_main_element_type type;
         uint64_t subtype;
     };
@@ -22,6 +23,7 @@ namespace fsl
     {
         char *data_copy;
         uint64_t data_length;
+        feather_lexer_info *global_info = nullptr;
         char *next_word(uint64_t *current_position);
         void continue_until_valid(uint64_t *pos);
         /* 
@@ -47,5 +49,9 @@ namespace fsl
         bool is_an_specific_item(const char *data);
         bool is_an_delimitor(const char *data);
         feather_lexer_info *generate_information();
+        constexpr inline feather_lexer_info *get_info()
+        {
+            return global_info;
+        }
     };
 } // namespace fsl
