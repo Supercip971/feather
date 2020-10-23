@@ -38,6 +38,7 @@ namespace fsl
 
         uint64_t current_length = 0;
         bool op = false;
+        bool eol = false;
         bool del = false;
         uint64_t start_pos = *current_position;
 
@@ -56,7 +57,14 @@ namespace fsl
                 (*current_position)++;
                 break;
             }
-
+            if(data_copy[*current_position] == ';'){
+                eol = true;
+                if (current_length != 1)
+                {
+                    current_length--;
+                }
+                break;
+            }
             if (is_an_operator(data_copy + *current_position))
             {
                 op = true;
@@ -82,7 +90,7 @@ namespace fsl
         memset(d, 0, current_length + 1);
         strncpy(d, data_copy + start_pos, current_length);
 
-        if ((del || op) && current_length == 1)
+        if ((del || op || eol) && current_length == 1)
         {
             (*current_position)++;
         }
@@ -126,6 +134,8 @@ namespace fsl
                 printf("[specific] %s \n", entry_to_print->data);
             }else if(entry_to_print->type == TYPE_OPERATOR){
                 printf("[operator] %s \n", entry_to_print->data);
+            }else if(entry_to_print->type == TYPE_END_OF_LINE){
+                printf("[end of line] %s\n", entry_to_print->data);
             }
         }
     }
@@ -156,6 +166,10 @@ namespace fsl
                 entry_to_edit->type = TYPE_DELIMITOR;
 
                  entry_to_edit->subtype = feather_delimitor_list.find_from_id(result[0]); // later we will check for func or other declaration
+            }else if(result[0] == ';'){
+                entry_to_edit->type = TYPE_END_OF_LINE;
+
+                entry_to_edit->subtype = 0; // later we will check for func or other declaration
             }else{
                 entry_to_edit->type = TYPE_TOKEN;
 

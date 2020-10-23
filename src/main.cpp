@@ -46,11 +46,11 @@ int main()
 {
     const char *feather_code =
         "func myfunction(){\n"
-        "    int v = 1 + 1 \n"
+        "    int v = 1 + 1 ; \n"
         "}\n"
         "\n"
         "func main(){\n"
-        "    myfunction()\n"
+        "    myfunction() ;\n"
         "}\n";
 
     printf("list entry %i get %s \n", 3, fsl::feather_operator_list.find_from_co(3));
