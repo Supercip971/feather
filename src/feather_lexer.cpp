@@ -123,9 +123,14 @@ namespace fsl
             result = next_word(&test);
         }
         feather_lexer_info* info =generate_information(); 
-        for(int i = 0; info->entry_count; i++){
+        uint64_t last_line = 0;
+        for(int i = 0; i < info->entry_count; i++){
 
             feather_lexer_entry* entry_to_print = &info->entry[i];
+            if(entry_to_print->line != last_line){
+                last_line = entry_to_print->line;
+                printf(" [===] at line %i \n",last_line);
+            }
             if(entry_to_print->type == TYPE_TOKEN){
                 printf("[token] %s \n", entry_to_print->data);
             }else if(entry_to_print->type == TYPE_DELIMITOR){
@@ -152,7 +157,8 @@ namespace fsl
         while (result != nullptr)
         {
             feather_lexer_entry* entry_to_edit = &information->entry[current_entry];
-            entry_to_edit->position = last_idex;
+            entry_to_edit->position = current_idex;
+            entry_to_edit->line = line_position_from_index(current_idex);
             if(is_an_operator(result)){
                  entry_to_edit->subtype = feather_operator_list.find_from_id(result); // later we will check for func or other declaration
    
