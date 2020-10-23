@@ -7,6 +7,8 @@ namespace fsl
     static fsl::feather_map<type1, type2> list_name =                 \
         fsl::feather_map<type1, type2>(element_list_name, sizeof(element_list_name) / sizeof(element_list_name[0]));
 
+    // ---------------- FEATHER OPERATOR ----------------
+
     enum feather_operator
     {
         OPERATOR_EQUAL = 1,
@@ -24,6 +26,8 @@ namespace fsl
             {"/", OPERATOR_DIVIDE}};
     LIST_DELCLARATION(feather_operator_list, operator_list, const char *, feather_operator);
 
+    // ---------------- FEATHER SPECIFIC ITEM ----------------
+
     enum feather_specific_item
     {
         NAME_FUNC = 1,
@@ -40,7 +44,8 @@ namespace fsl
         NAME_WHILE,
         NAME_FOR,
         NAME_DO_WHILE,
-        NAME_IMPORT
+        NAME_IMPORT,
+        NAME_RETURN,
     };
     static const fsl::feather_map_element<const char *, feather_specific_item> specific_item[] =
         {
@@ -57,8 +62,11 @@ namespace fsl
             {"while", NAME_WHILE},
             {"for", NAME_FOR},
             {"do_while", NAME_DO_WHILE},
-            {"import", NAME_IMPORT}};
+            {"import", NAME_IMPORT},
+            {"return", NAME_RETURN}};
     LIST_DELCLARATION(feather_specific_item_list, specific_item, const char *, feather_specific_item);
+
+    // ---------------- FEATHER DELIMITOR ----------------
 
     enum feather_delimitor
     {
@@ -69,7 +77,7 @@ namespace fsl
         DELIMITOR_ARGUMENT_BLOCK_CLOSE,
         DELIMITOR_ARRAY_BLOCK_CLOSE,
     };
-    
+
     static const fsl::feather_map_element<char, feather_delimitor> delimitor_list[] =
         {
             {'{', DELIMITOR_CODE_BLOCK_OPEN},
