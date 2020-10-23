@@ -7,7 +7,7 @@ namespace fsl
 {
     struct feather_lexer_entry
     {
-        char* data;
+        char *data;
         uint64_t position;
         uint64_t line;
         feather_main_element_type type;
@@ -37,6 +37,8 @@ namespace fsl
          6 +
          7 1
         */
+        bool is_only_number(char *dat);
+
     public:
         lexer();
         lexer(const char *code);
