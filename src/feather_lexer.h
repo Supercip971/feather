@@ -40,6 +40,7 @@ namespace fsl
     public:
         lexer();
         lexer(const char *code);
+        uint64_t line_position_from_index(uint64_t index);
         bool is_an_operator(const char *data);
         bool is_an_specific_item(const char *data);
         bool is_an_delimitor(const char *data);

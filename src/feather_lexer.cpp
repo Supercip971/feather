@@ -88,6 +88,16 @@ namespace fsl
         }
         return d;
     };
+    uint64_t lexer::line_position_from_index(uint64_t index){
+        uint64_t cur_line = 0;
+        for (int i = 0; i < index; i++){
+            if(data_copy[i] == '\n'){
+                cur_line++;
+            }
+        }
+        return cur_line;
+    }
+
     lexer::lexer()
     {
     }
