@@ -36,10 +36,10 @@ namespace fsl
         }
 
         uint64_t current_length = 0;
-        uint64_t op = 0;
-        uint64_t del = 0;
+        bool op = false;
+        bool del = false;
         uint64_t start_pos = *current_position;
-        
+
         while (true)
         {
 
@@ -56,18 +56,18 @@ namespace fsl
                 break;
             }
 
-            op = feather_operator_list.find_from_id_verification(data_copy + *current_position, lexer_feather_map_verification);
-            if (op != 0)
+            if (is_an_operator(data_copy + *current_position))
             {
+                op = true;
                 if (current_length != 1)
                 {
                     current_length--;
                 }
                 break;
             }
-            del = feather_delimitor_list.find_from_id(current_char);
-            if (del != 0)
+            if (is_an_delimitor(data_copy + *current_position))
             {
+                del = true;
                 if (current_length != 1) // in the case of blabla( reduce length of 1
                 {
                     current_length--;
@@ -81,7 +81,7 @@ namespace fsl
         memset(d, 0, current_length + 1);
         strncpy(d, data_copy + start_pos, current_length);
 
-        if ((del != 0 || op != 0) && current_length == 1)
+        if ((del || op) && current_length == 1)
         {
             (*current_position)++;
         }
@@ -103,5 +103,19 @@ namespace fsl
             free(result);
             result = next_word(&test);
         }
+    bool lexer::is_an_operator(const char *data)
+    {
+        int result = feather_operator_list.find_from_id_verification(data, lexer_feather_map_verification);
+        return (result != 0);
+    }
+    bool lexer::is_an_specific_item(const char *data)
+    {
+        int result = feather_specific_item_list.find_from_id_verification(data, lexer_feather_map_verification);
+        return (result != 0);
+    }
+    bool lexer::is_an_delimitor(const char *data)
+    {
+        int result = feather_delimitor_list.find_from_id(data[0]);
+        return (result != 0);
     }
 } // namespace fsl

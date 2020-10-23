@@ -33,5 +33,8 @@ namespace fsl
     public:
         lexer();
         lexer(const char *code);
+        bool is_an_operator(const char *data);
+        bool is_an_specific_item(const char *data);
+        bool is_an_delimitor(const char *data);
     };
 } // namespace fsl
