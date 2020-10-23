@@ -7,6 +7,14 @@ namespace fsl
     static fsl::feather_map<type1, type2> list_name =                 \
         fsl::feather_map<type1, type2>(element_list_name, sizeof(element_list_name) / sizeof(element_list_name[0]));
 
+    enum feather_main_element_type
+    {
+        TYPE_OPERATOR = 1,
+        TYPE_SPECIFIC = 2,
+        TYPE_DELIMITOR = 3,
+        TYPE_TOKEN = 4
+    };
+
     // ---------------- FEATHER OPERATOR ----------------
 
     enum feather_operator

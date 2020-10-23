@@ -1,15 +1,22 @@
 #pragma once
 
+#include "feather_type.h"
 #include <bits/stdint-uintn.h>
 #include <stdint.h>
 namespace fsl
 {
     struct feather_lexer_entry
     {
+        char* data;
         uint64_t position;
         uint64_t line;
-        uint64_t type;
+        feather_main_element_type type;
         uint64_t subtype;
+    };
+    struct feather_lexer_info
+    {
+        feather_lexer_entry *entry;
+        uint64_t entry_count;
     };
     class lexer
     {
@@ -36,5 +43,6 @@ namespace fsl
         bool is_an_operator(const char *data);
         bool is_an_specific_item(const char *data);
         bool is_an_delimitor(const char *data);
+        feather_lexer_info *generate_information();
     };
 } // namespace fsl
