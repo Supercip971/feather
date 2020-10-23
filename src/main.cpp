@@ -1,5 +1,18 @@
 #include "feather_vm.h"
 #include <stdio.h>
+/*
+
+
+0 | func myfunction(){
+1 |     int v = 1+1
+2 | }
+3 |
+4 | func main(){
+5 |     myfunction()
+6 | };
+
+
+*/
 
 int main()
 {
@@ -12,8 +25,5 @@ int main()
         "    myfunction()\n"
         "}\n";
 
-    fsl::feather_vm vm;
-    vm.init(feather_code);
-    vm.run();
     return 0;
 }
