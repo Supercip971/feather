@@ -4,26 +4,35 @@
 #include "feather_type.h"
 namespace fsl
 {
+
     class feather_programm_counter
     {
         static const int max_programm_counter = 64;
+        uint64_t main_current = 0;
         uint64_t get_current = 0;
+        feather_variable_list context_list[max_programm_counter];
         uint64_t line_counter[max_programm_counter];
 
     public:
+        inline constexpr feather_variable_list &current_var_list()
+        {
+            return context_list[get_current];
+        }
         inline constexpr uint64_t &current()
         {
             return line_counter[get_current];
         }
-
-        inline constexpr uint64_t &push(uint64_t value)
+        inline uint64_t &push(uint64_t value)
         {
             get_current++;
+            context_list[get_current] = feather_variable_list();
+            context_list[get_current].create();
             line_counter[get_current] = value;
             return line_counter[get_current];
         }
-        inline constexpr uint64_t pop()
+        inline uint64_t pop()
         {
+            context_list[get_current].destroy();
             line_counter[get_current] = 0;
             get_current--;
             return line_counter[get_current];
