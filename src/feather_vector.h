@@ -4,7 +4,7 @@
 
 namespace fsl {
     template <typename T>
-    class feather_list{
+    class feather_vector{
         unsigned int allocated_length = 0;
         unsigned int data_length = 0;
         T* data;
@@ -22,7 +22,7 @@ namespace fsl {
 
         void remove_entry(unsigned int entry_id);
 
-
+        void insert_entry(unsigned int entry_id, T d);
 
         T* get_entry(unsigned int entry_id);
         inline T* operator[](unsigned int entry_id){
@@ -32,14 +32,14 @@ namespace fsl {
 
 
     template <typename T>
-    void feather_list<T>::create(){
+    void feather_vector<T>::create(){
         data = malloc(sizeof (T));
         allocated_length = 1;
         data_length = 0;
     }
 
     template <typename T>
-    void feather_list<T>::increase(unsigned int new_length){
+    void feather_vector<T>::increase(unsigned int new_length){
         if(allocated_length < new_length){
             data = realloc(data, new_length*sizeof (T));
             data_length = new_length;
@@ -50,12 +50,13 @@ namespace fsl {
     }
 
     template <typename T>
-    void feather_list<T>::push(T d){
+    void feather_vector<T>::push(T d){
         increase(data_length + 1);
         data[data_length-1] = d;
     }
+
     template <typename T>
-    void feather_list<T>::remove_entry(unsigned int entry_id){
+    void feather_vector<T>::remove_entry(unsigned int entry_id){
         for(int i =entry_id; i< data_length; i++){
             data[i] = data[i+1];
         }
@@ -63,8 +64,18 @@ namespace fsl {
     }
 
     template <typename T>
-    T* feather_list<T>::get_entry(unsigned int entry_id){
+    T* feather_vector<T>::get_entry(unsigned int entry_id){
         return data[entry_id];
+    }
+
+
+    template <typename T>
+    void feather_vector<T>::insert_entry(unsigned int entry_id, T d){
+        increase(data_length + 1);
+        for(int i =data_length; i > entry_id; i--){
+            data[i] = data[i-1];
+        }
+        data[entry_id] = d;
     }
 
 }
