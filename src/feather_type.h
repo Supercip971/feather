@@ -41,11 +41,11 @@ namespace fsl
     enum feather_specific_item
     {
         NAME_FUNC = 1,
-        NAME_INT,
         NAME_BOOL,
+        NAME_INT,
+        NAME_FLOAT,
         NAME_STRING,
         NAME_CHAR,
-        NAME_FLOAT,
         NAME_ADDRESS,
         NAME_IF,
         NAME_ELIF,
@@ -68,7 +68,6 @@ namespace fsl
             {"if", NAME_IF},
             {"elif", NAME_ELIF},
             {"else", NAME_ELSE},
-            {"null", NAME_NULL},
             {"while", NAME_WHILE},
             {"for", NAME_FOR},
             {"do_while", NAME_DO_WHILE},
