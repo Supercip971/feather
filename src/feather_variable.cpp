@@ -63,7 +63,7 @@ namespace fsl
             {
                 continue;
             }
-            if (strcmp(name, var_list[i].get_var_name()))
+            if (strcmp(name, var_list[i].get_var_name()) == 0)
             {
                 return &var_list[i];
             }
