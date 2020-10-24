@@ -2,6 +2,8 @@
 #include "feather_map.h"
 #include "feather_type.h"
 #include "feather_vm.h"
+
+#include "feather_vector.h"
 #include <bits/stdint-uintn.h>
 #include <stdio.h>
 /*
@@ -46,15 +48,14 @@ int main()
 {
     const char *feather_code =
         "func myfunction(){\n"
-        "    int v = 1 + 1 ; \n"
+        "    int v = 1 + 3 * 4 ; \n"
         "}\n"
         "\n"
         "func main(){\n"
         "    myfunction() ;\n"
         "}\n";
-
-    printf("list entry %i get %s \n", 3, fsl::feather_operator_list.find_from_co(3));
-    fsl::lexer lex = fsl::lexer(feather_code);
+    fsl::feather_virtual_machine vm = fsl::feather_virtual_machine(feather_code);
+    vm.start();
 
     return 0;
 }
