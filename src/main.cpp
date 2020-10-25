@@ -10,11 +10,11 @@
 
 
 0 | func myfunction(){
-1 |     int v = 1+1
+1 |     int v = 1 + 3 * 4;
 2 | }
 3 |
 4 | func main(){
-5 |     myfunction()
+5 |     myfunction();
 6 | }
 
 so the lexer has to do this 
@@ -48,7 +48,7 @@ int main()
 {
     const char *feather_code =
         "func myfunction(){\n"
-        "    int v = 1 + 3 * 4 ; \n"
+        "    int v = 1 + 3 * 4 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 - 3 ; \n"
         "}\n"
         "\n"
         "func main(){\n"
