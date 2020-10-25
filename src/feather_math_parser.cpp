@@ -20,6 +20,10 @@ namespace fsl
         {
             result = right->value * left->value;
         }
+        else if (operator_subtype == OPERATOR_SUBSTRACT)
+        {
+            result = left->value - right->value;
+        }
         math_entry new_entry;
         new_entry.type = TYPE_NUMBER;
         new_entry.value = result;
