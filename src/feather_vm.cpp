@@ -82,11 +82,12 @@ namespace fsl
               // if there is a ';' after it is a variable definition
               // if there is a '=' after it is a variable assignation
               // if there is a '(' after it is a function call
-            else if (entry[i].type == TYPE_SPECIFIC)
+            else if (entry[i].type == TYPE_SPECIFIC && entry[i].subtype != NAME_FUNC)
             { // specific can only be on the first word of a line
                 if (i != 0)
                 {
-                    printf("specific entry isn't at the start of the line %i (%s)", entry[i].line, entry[i].data);
+                    printf("specific entry isn't at the start of the line %i (%s) / %i\n", entry[i].line, entry[i].data,i);
+                    printf("previous entry %s \n", entry[i-1].data);
                 }
                 interpret_line_specific(entry, i);
             }
