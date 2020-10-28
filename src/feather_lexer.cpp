@@ -10,6 +10,12 @@ namespace fsl
     bool lexer_feather_map_verification(const char *a, const char *b)
     {
         return (strncmp(a, b, strlen(a)) == 0);
+    }bool lexer_feather_map_operator_verification(const char *a, const char *b)
+    {
+        if(strncmp(b, "->", 2) == 0){
+            return false;
+        }
+        return (strncmp(a, b, strlen(a)) == 0);
     }
 
     void lexer::continue_until_valid(uint64_t *pos)
@@ -197,17 +203,18 @@ namespace fsl
             entry_to_edit->position = current_idex;
             entry_to_edit->entry_id = current_entry;
             entry_to_edit->line = line_position_from_index(current_idex);
-            if (is_an_operator(result))
-            {
-                entry_to_edit->subtype = feather_operator_list.find_from_id_verification(result, lexer_feather_map_verification); // later we will check for func or other declaration
-
-                entry_to_edit->type = TYPE_OPERATOR;
-            }
-            else if (is_an_specific_item(result))
+            if (is_an_specific_item(result))
             {
                 entry_to_edit->type = TYPE_SPECIFIC;
                 entry_to_edit->subtype = feather_specific_item_list.find_from_id_verification(result, lexer_feather_map_verification); // later we will check for func or other declaration
             }
+            else if (is_an_operator(result))
+            {
+                entry_to_edit->subtype = feather_operator_list.find_from_id_verification(result, lexer_feather_map_operator_verification); // later we will check for func or other declaration
+
+                entry_to_edit->type = TYPE_OPERATOR;
+            }
+
             else if (is_an_delimitor(result))
             {
                 entry_to_edit->type = TYPE_DELIMITOR;
@@ -244,7 +251,7 @@ namespace fsl
 
     bool lexer::is_an_operator(const char *data)
     {
-        int result = feather_operator_list.find_from_id_verification(data, lexer_feather_map_verification);
+        int result = feather_operator_list.find_from_id_verification(data, lexer_feather_map_operator_verification);
         return (result != 0);
     }
     bool lexer::is_an_specific_item(const char *data)
