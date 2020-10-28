@@ -106,9 +106,13 @@ namespace fsl
         {
             printf("running %i / %s \n", programm_counter.current(), lexer_info->entry[programm_counter.current()].data);
 
-            current_line[current_line_entry] = lexer_info->entry[programm_counter.current()];
-            current_line_entry++;
+            //printf("running %i / %s / %i \n", programm_counter.current(), lexer_info->entry[programm_counter.current()].data, current_line_entry);
+            if(current_line_entry != 0 || lexer_info->entry[programm_counter.current()].type != TYPE_END_OF_LINE){
+                current_line[current_line_entry] = lexer_info->entry[programm_counter.current()];
 
+                current_line_entry++;
+
+            }
             programm_counter.current()++;
             uint64_t next = programm_counter.current();
             if (lexer_info->entry[next].type == TYPE_END_OF_LINE)
