@@ -1,5 +1,4 @@
 
-#pragma once
 #include "feather_vm.h"
 #include "feather_lexer.h"
 #include "feather_math_parser.h"
@@ -54,8 +53,8 @@ namespace fsl
             else
             {
                 uint64_t r = interpret_subcode(entry, entry_id + 3, TYPE_END_OF_LINE); //
-                printf("var value %i \n", r);
                 list.find_variable(entry[entry_id + 1].data)->set_value(r);
+                printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_value());
             }
             return 0;
         }
@@ -105,7 +104,6 @@ namespace fsl
         uint64_t last_result = 0;
         while (current_context != 0)
         {
-            printf("running %i / %s \n", programm_counter.current(), lexer_info->entry[programm_counter.current()].data);
 
             //printf("running %i / %s / %i \n", programm_counter.current(), lexer_info->entry[programm_counter.current()].data, current_line_entry);
             if(current_line_entry != 0 || lexer_info->entry[programm_counter.current()].type != TYPE_END_OF_LINE){
