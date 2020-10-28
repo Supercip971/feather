@@ -23,6 +23,9 @@ namespace fsl
         else if (operator_subtype == OPERATOR_SUBSTRACT)
         {
             result = left->value - right->value;
+        }else if (operator_subtype == OPERATOR_DIVIDE)
+        {
+            result = left->value / right->value;
         }
         math_entry new_entry;
         new_entry.type = TYPE_NUMBER;
