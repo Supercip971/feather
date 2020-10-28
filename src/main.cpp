@@ -48,7 +48,8 @@ int main()
 {
     const char *feather_code =
         "func myfunction(){\n"
-        "    int v = 1 + 3 * 4 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 - 3 ; \n"
+        "    int i = 13 ; \n"
+        "    int v = i - 3 + 4 * 2  ; \n"
         "}\n"
         "\n"
         "func main(){\n"
