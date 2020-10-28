@@ -2,7 +2,9 @@
 #pragma once
 #include "feather_lexer.h"
 #include "feather_type.h"
+#include "feather_function.h"
 #include "feather_variable.h"
+#include "feather_vector.h"
 namespace fsl
 {
 
@@ -43,12 +45,14 @@ namespace fsl
 
     class feather_virtual_machine
     {
+
         fsl::lexer main_lexer;
         feather_lexer_info *lexer_info;
         feather_programm_counter programm_counter;
-        uint64_t find_function_start(feather_lexer_entry function); // for later pre definition too
-        feather_lexer_entry *find_function_definition(const char *name);
-
+        feather_vector<feather_function> function_list;
+        uint64_t find_function_start(feather_function function); // for later pre definition too
+        feather_function *find_function_definition(const char *name);
+        void init_function_list();
         uint64_t run_code(uint64_t from);
         // uint64_t interpret_sub_sub_code(feather_lexer_entry *entry, uint64_t start, uint64_t end); // used for element in '(' ')'
         uint64_t interpret_subcode(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement); // used for variable definition or if/elseif/while statement
@@ -56,7 +60,7 @@ namespace fsl
         uint64_t interpret_line_specific(feather_lexer_entry *entry, uint64_t entry_id);
 
     public:
-        feather_variable* find_variable_value(const char* name);
+        feather_variable *find_variable_value(const char *name);
         feather_virtual_machine();
         feather_virtual_machine(const char *code_data);
         void start();

@@ -17,43 +17,21 @@
 5 |     myfunction();
 6 | }
 
-so the lexer has to do this 
 
-[func] special 
-[myfunction] token
-[(] argument zone
-[)] argument zone end
-[{] code start
-[int] type
-[v] token
-[=] operator
-[1] number
-[+] operator
-[1] number
-[}] end code
-[func] special
-[main] token
 
-[(] argument zone
-[)] argument zone end
-[{] code start
-[myfunction] token
-
-[(] argument zone
-[)] argument zone end
-[}] code end
 
 */
 int main()
 {
     const char *feather_code =
-        "func myfunction(){\n"
+        "func myfunction() -> int {\n"
         "    int i = 13 ; \n"
         "    int v = i - 3 + 4 * 2  ; \n"
+        "    return v;"
         "}\n"
         "\n"
         "func main(){\n"
-        "    myfunction() ;\n"
+        "    myfunction();\n"
         "}\n";
     fsl::feather_virtual_machine vm = fsl::feather_virtual_machine(feather_code);
     vm.start();
