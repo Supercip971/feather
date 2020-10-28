@@ -27,7 +27,7 @@ int main()
         "func myfunction() -> int {\n"
         "    int i = 13 ; \n"
         "    int v = i - 3 + 4 * 2  ; \n"
-        "    return v;"
+        "    return v ;"
         "}\n"
         "\n"
         "func main(){\n"

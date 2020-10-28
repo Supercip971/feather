@@ -57,12 +57,18 @@ namespace fsl
                 printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_value());
             }
             return 0;
+        }else if(entry[entry_id].subtype == NAME_RETURN){
+
+            uint64_t r = interpret_subcode(entry, entry_id + 1, TYPE_END_OF_LINE); //
+            printf("returning %i \n", r);
+            return r;
         }
 
         return 0;
     }
     uint64_t feather_virtual_machine::interpret_multiple_entry(feather_lexer_entry *entry, uint64_t count)
     {
+        uint64_t last_result = 0;
         for (uint64_t i = 0; i < count; i++)
         {
             if (entry[i].type == TYPE_TOKEN)
@@ -75,7 +81,9 @@ namespace fsl
                         return -1;
                     }
                     uint64_t result = run_code(find_function_start(*function));
+                    last_result = result;
                     programm_counter.pop();
+                    return last_result;
                 }
             } // to thing
               // if there is a ';' after it is a variable definition
@@ -88,7 +96,8 @@ namespace fsl
                     printf("specific entry isn't at the start of the line %i (%s) / %i\n", entry[i].line, entry[i].data, i);
                     printf("previous entry %s \n", entry[i - 1].data);
                 }
-                interpret_line_specific(entry, i);
+                last_result = interpret_line_specific(entry, i);
+                return last_result;
             }
         }
         return 0;
