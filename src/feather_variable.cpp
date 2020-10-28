@@ -43,6 +43,19 @@ namespace fsl
         var_list_length = 1;
         var_list = (feather_variable *)malloc(sizeof(feather_variable) * (var_list_length));
     }
+    void feather_variable_list::dump(){
+        for (uint64_t i = 0; i < var_list_length+1; i++)
+        {
+
+            if (var_list[i].get_var_name() == nullptr)
+            {
+                continue;
+            }
+
+            printf("%s = %i \n", var_list[i].get_var_name(), var_list[i].get_value());
+
+        }
+    }
     void feather_variable_list::add_variable(uint64_t value, const char *name, feather_variable_type type)
     {
         if (var_list == nullptr)

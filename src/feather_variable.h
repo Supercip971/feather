@@ -62,6 +62,7 @@ namespace fsl
         {
             return &global_list;
         }
+        void dump();
         void destroy();
         void create();
         void add_variable(uint64_t value, const char *name, feather_variable_type type);
