@@ -1,7 +1,6 @@
 #pragma once
 
 #include "feather_type.h"
-#include <bits/stdint-uintn.h>
 #include <stdint.h>
 namespace fsl
 {

@@ -1,6 +1,6 @@
 #include "feather_math_parser.h"
-#include <stdlib.h>
 #include <stddef.h>
+#include <stdlib.h>
 namespace fsl
 {
     void feather_math_expression::interpret_part(uint64_t operator_is_at)
@@ -24,7 +24,8 @@ namespace fsl
         else if (operator_subtype == OPERATOR_SUBSTRACT)
         {
             result = left->value - right->value;
-        }else if (operator_subtype == OPERATOR_DIVIDE)
+        }
+        else if (operator_subtype == OPERATOR_DIVIDE)
         {
             result = left->value / right->value;
         }
@@ -112,7 +113,7 @@ namespace fsl
         }
         return math_vector[0]->value;
     }
-    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, feather_virtual_machine* target)
+    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, feather_virtual_machine *target)
     {
         math_vector.create();
         bool has_delimitor = false;
@@ -137,7 +138,9 @@ namespace fsl
                 current.type = TYPE_NUMBER;
                 current.value = atoi(entry[i].data);
                 math_vector.push(current);
-            }else if(entry[i].type == TYPE_TOKEN){
+            }
+            else if (entry[i].type == TYPE_TOKEN)
+            {
 
                 current.type = TYPE_NUMBER;
                 printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_value());
