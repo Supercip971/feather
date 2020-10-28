@@ -21,19 +21,19 @@ namespace fsl
     {
         char *variable_name = nullptr;
         bool garbage = true;
-        uint64_t value;
+        int64_t value;
         feather_variable_type type;
 
     public:
         feather_variable();
-        feather_variable(uint64_t val, const char *name, feather_variable_type var_type);
+        feather_variable(int64_t val, const char *name, feather_variable_type var_type);
 
-        constexpr inline uint64_t get_value()
+        inline int64_t get_value()
         {
             return value;
         }
 
-        constexpr inline void set_value(uint64_t val)
+        inline void set_value(int64_t val)
         {
             value = val;
         }

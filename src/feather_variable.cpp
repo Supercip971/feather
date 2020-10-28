@@ -11,8 +11,9 @@ namespace fsl
         type = VAR_TYPE_ADDRESS;
         value = 0;
     }
-    feather_variable::feather_variable(uint64_t val, const char *name, feather_variable_type var_type)
+    feather_variable::feather_variable(int64_t val, const char *name, feather_variable_type var_type)
     {
+
 
 
         variable_name = (char*)malloc(strlen(name)+1);
@@ -38,11 +39,13 @@ namespace fsl
     {
         if (var_list != nullptr)
         {
+            printf("var list already is created \n");
             destroy();
         }
         var_list_length = 1;
         var_list = (feather_variable *)malloc(sizeof(feather_variable) * (var_list_length));
     }
+
     void feather_variable_list::dump(){
         for (uint64_t i = 0; i < var_list_length+1; i++)
         {
