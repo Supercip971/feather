@@ -4,7 +4,6 @@
 #include "feather_vm.h"
 
 #include "feather_vector.h"
-#include <bits/stdint-uintn.h>
 #include <stdio.h>
 /*
 
