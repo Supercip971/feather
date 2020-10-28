@@ -55,6 +55,8 @@ namespace fsl
         feather_variable *var_list = nullptr;
         static feather_variable_list global_list; // may be used for global system variable
         bool loaded = false;                      // like feather_time / feather_version ...
+
+        char* to_valid_var_name(const char* name);
     public:
         feather_variable_list();
 
