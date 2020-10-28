@@ -26,6 +26,7 @@ namespace fsl
         inline uint64_t &push(uint64_t value)
         {
             get_current++;
+            context_list[get_current].destroy();
             context_list[get_current] = feather_variable_list();
             context_list[get_current].create();
             line_counter[get_current] = value;
