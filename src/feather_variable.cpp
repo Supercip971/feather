@@ -13,7 +13,10 @@ namespace fsl
     }
     feather_variable::feather_variable(uint64_t val, const char *name, feather_variable_type var_type)
     {
-        variable_name = name;
+
+
+        variable_name = (char*)malloc(strlen(name)+1);
+        memcpy(variable_name, name, strlen(name)+1);
         value = val;
         type = var_type;
     }

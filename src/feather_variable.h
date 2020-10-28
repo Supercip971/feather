@@ -19,7 +19,7 @@ namespace fsl
 
     class feather_variable
     {
-        const char *variable_name = nullptr;
+        char *variable_name = nullptr;
         bool garbage = true;
         uint64_t value;
         feather_variable_type type;
