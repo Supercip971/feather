@@ -24,7 +24,7 @@ namespace fsl
     {
         feather_math_expression expression = feather_math_expression();
 
-        return expression.interpret(entry, count, end_statement);
+        return expression.interpret(entry, count, end_statement, this);
     }
     uint64_t feather_virtual_machine::interpret_line_specific(feather_lexer_entry *entry, uint64_t entry_id)
     {

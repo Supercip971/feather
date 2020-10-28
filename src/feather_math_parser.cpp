@@ -1,5 +1,6 @@
 #include "feather_math_parser.h"
 #include <stdlib.h>
+#include <stddef.h>
 namespace fsl
 {
     void feather_math_expression::interpret_part(uint64_t operator_is_at)
@@ -111,10 +112,11 @@ namespace fsl
         }
         return math_vector[0]->value;
     }
-    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement)
+    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, feather_virtual_machine* target)
     {
         math_vector.create();
         bool has_delimitor = false;
+        bool start_read_token = false;
         for (uint64_t i = count; entry[i].type != end_statement; i++)
         {
             math_entry current = {0};
@@ -135,6 +137,12 @@ namespace fsl
                 current.type = TYPE_NUMBER;
                 current.value = atoi(entry[i].data);
                 math_vector.push(current);
+            }else if(entry[i].type == TYPE_TOKEN){
+
+                current.type = TYPE_NUMBER;
+                printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_value());
+                current.value = (target->find_variable_value(entry[i].data)->get_value());
+                math_vector.push(current);
             }
             else
             {
@@ -143,9 +151,23 @@ namespace fsl
         }
         if (!has_delimitor)
         {
+            for (int j = 0; j < 10; j++)
+            {
 
+                if (math_vector[j]->type == TYPE_NUMBER)
+                {
+
+                    printf("[%i][%i] %x \n", 0, j, math_vector[j]->value);
+                }
+                else if (math_vector[j]->type == TYPE_OPERATOR)
+                {
+
+                    printf("[%i][%i] %s \n", 0, j, feather_operator_list.find_from_co((feather_operator)math_vector[j]->operators));
+                }
+            }
             return interpret_region(0, math_vector.get_length());
         }
+
         return 0;
     }
 } // namespace fsl

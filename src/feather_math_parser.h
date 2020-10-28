@@ -1,6 +1,7 @@
 #pragma once
 #include "feather_lexer.h"
 #include "feather_vector.h"
+#include "feather_vm.h"
 #include <stdint.h>
 namespace fsl
 {
@@ -17,6 +18,6 @@ namespace fsl
         uint64_t interpret_region(uint64_t start, uint64_t length);
 
     public:
-        uint64_t interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement);
+        uint64_t interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, feather_virtual_machine* target);
     };
 } // namespace fsl
