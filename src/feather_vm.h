@@ -55,6 +55,7 @@ namespace fsl
         uint64_t interpret_line_specific(feather_lexer_entry *entry, uint64_t entry_id);
 
     public:
+        feather_variable* find_variable_value(const char* name);
         feather_virtual_machine();
         feather_virtual_machine(const char *code_data);
         void start();

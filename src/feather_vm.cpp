@@ -200,4 +200,8 @@ namespace fsl
         }
         return nullptr;
     }
+
+    feather_variable* feather_virtual_machine::find_variable_value(const char* name){
+        return programm_counter.current_var_list().find_variable(name);
+    }
 } // namespace fsl
