@@ -52,7 +52,7 @@ namespace fsl
         printf("creating function named %s \n", name);
         start = entry;
         return_type  =0;
-
+        init_argument(d,entry);
 
         while (true)
         {
@@ -76,6 +76,22 @@ namespace fsl
             }
             start++;
         }
+    }
+
+    bool feather_function::set_valid_argument(feather_vector<function_argument>& target_arg_list){
+        if(target_arg_list.get_length() != arguments.get_length()){
+            printf("not valid length %i where it should be %i \n",target_arg_list.get_length(), arguments.get_length());
+            return false;
+        }
+        for(int i = 0; i < arguments.get_length(); i++){
+            if(target_arg_list[i]->type != arguments[i]->type){
+                printf("invalid type for %s \n", arguments[i]->name);
+                return false;
+            }else{
+                target_arg_list[i]->name = arguments[i]->name;
+            }
+        }
+        return true;
     }
     uint64_t feather_function::get_start()
     {

@@ -9,7 +9,9 @@ namespace fsl
 {
     struct function_argument{
         const char* name;
+
         feather_variable_type type;
+        int64_t value;
     };
 
     class feather_function
@@ -26,7 +28,7 @@ namespace fsl
         feather_function();
         void init_argument(feather_lexer_entry *d, uint64_t entry);
         feather_function(feather_lexer_entry *d, uint64_t entry);
-        void initerpret_call_argument(feather_variable_list* var_list, feather_lexer_entry * entry_list);
+        bool set_valid_argument(feather_vector<function_argument>& target_arg_list);
 
         uint64_t get_start();
         uint64_t get_line();
