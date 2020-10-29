@@ -103,14 +103,12 @@ namespace fsl
         return 0;
     }
 
-    uint64_t feather_virtual_machine::run_code(uint64_t from)
-    {
-        printf("running code from %i \n", from);
-        uint64_t current_line_entry = 0;
-        feather_lexer_entry *current_line = new feather_lexer_entry[64]; // max 64 entry in a 'line'
-        uint64_t current_context = 1;
-        programm_counter.push(from);
+    uint64_t feather_virtual_machine::run_code_without_pushing_context(uint64_t from){
+        printf("jumping at %i \n", from);
         uint64_t last_result = 0;
+                uint64_t current_context = 1;
+                uint64_t current_line_entry = 0;
+                feather_lexer_entry *current_line = new feather_lexer_entry[64]; // max 64 entry in a 'line'
         while (current_context != 0)
         {
 
@@ -146,9 +144,13 @@ namespace fsl
                     }
                 }
             }
-            //  printf("next %i / %s \n", programm_counter.current(), lexer_info->entry[programm_counter.current()].data);
         }
         return 0;
+    }
+    uint64_t feather_virtual_machine::run_code(uint64_t from)
+    {
+        programm_counter.push(from);
+        return run_code_without_pushing_context(from);
     }
     void feather_virtual_machine::init_function_list(){
 
