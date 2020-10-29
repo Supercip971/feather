@@ -9,6 +9,32 @@ namespace fsl
         end = 0;
         dady = nullptr;
     }
+    void feather_function::init_argument(feather_lexer_entry *d, uint64_t entry){
+        arguments.create();
+        while(true){
+
+            if(d[start].type == TYPE_SPECIFIC && d[start].subtype < NAME_IF){
+                if(d[start+1].type == TYPE_TOKEN){
+                    if(d[start+2].type == TYPE_DELIMITOR && d[start+2].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE ){
+                        printf("argument %s of type %s \n", d[start+1].data, d[start].data);
+                        arguments.push({d[start+1].data,(feather_variable_type)d[start].subtype});
+                        break;
+                    }else if(d[start+2].type == TYPE_SPECIFIC && d[start+2].subtype == NAME_LIST_DELIMIT){
+                        printf("argument %s of type %s \n", d[start+1].data, d[start].data);
+                        arguments.push({d[start+1].data,(feather_variable_type)d[start].subtype});
+                    }else{
+                        printf("invalid element %s \n", d[start+2].data);
+                    }
+                }else{
+                    printf("invalid function declaration\n");
+                }
+            }
+            if(d[start].type == TYPE_DELIMITOR && d[start].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                break;
+            }
+            start++;
+        }
+    }
     feather_function::feather_function(feather_lexer_entry *d, uint64_t entry)
     {
         if (d[entry].type != TYPE_SPECIFIC)
@@ -26,6 +52,8 @@ namespace fsl
         printf("creating function named %s \n", name);
         start = entry;
         return_type  =0;
+
+
         while (true)
         {
             if (d[start].type == TYPE_DELIMITOR && d[start].subtype == DELIMITOR_CODE_BLOCK_OPEN)
