@@ -58,6 +58,7 @@ namespace fsl
         NAME_RETURN,
         NAME_CLASS,
         NAME_RETURN_TYPE,
+        NAME_LIST_DELIMIT,
     };
     static const fsl::feather_map_element<const char *, feather_specific_item> specific_item[] =
         {
@@ -76,7 +77,8 @@ namespace fsl
             {"import", NAME_IMPORT},
             {"return", NAME_RETURN},
             {"class", NAME_CLASS},
-            {"->", NAME_RETURN_TYPE}};
+            {"->", NAME_RETURN_TYPE},
+            {",",NAME_LIST_DELIMIT}};
     LIST_DELCLARATION(feather_specific_item_list, specific_item, const char *, feather_specific_item);
 
     // ---------------- FEATHER DELIMITOR ----------------
