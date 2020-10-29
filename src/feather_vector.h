@@ -32,6 +32,8 @@ namespace fsl
         {
             return get_entry(entry_id);
         }
+
+        void destroy();
     };
 
     template <typename T>
@@ -92,6 +94,11 @@ namespace fsl
             data[i] = data[i - 1];
         }
         data[entry_id] = d;
+    }
+    template <typename T>
+    void feather_vector<T>::destroy()
+    {
+        free(data);
     }
 
 } // namespace fsl
