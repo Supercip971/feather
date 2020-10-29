@@ -65,28 +65,44 @@ namespace fsl
             }
             if (data_copy[*current_position] == ';') // line break
             {
-                eol = true;
                 if (current_length != 1)
                 {
                     current_length--;
+                }else{
+
+                    eol = true;
+                }
+                break;
+            }if (data_copy[*current_position] == ',')
+            {
+                if (current_length != 1)
+                {
+                    current_length--;
+                }else{
+
+                    eol = true;
                 }
                 break;
             }
             if (is_an_operator(data_copy + *current_position))
             {
-                op = true;
                 if (current_length != 1)
                 {
                     current_length--;
+                }else{
+
+                    op = true;
                 }
                 break;
             }
             if (is_an_delimitor(data_copy + *current_position))
             {
-                del = true;
                 if (current_length != 1) // in the case of blabla( reduce length of 1
                 {
                     current_length--;
+                }else{
+
+                    del = true;
                 }
                 break;
             }
