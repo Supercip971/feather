@@ -66,6 +66,55 @@ namespace fsl
 
         return 0;
     }
+    feather_vector<function_argument> feather_virtual_machine::generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start){
+        feather_vector<function_argument> target;
+        target.create();
+        int current_offset = 0;
+        bool wait_for_separator = false;
+        for(int i = start; i<count; i++){
+            if(entry[i].type == TYPE_DELIMITOR){
+                if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_OPEN){
+                    current_offset++;
+                }
+                if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                    current_offset--;
+                    if(current_offset == 0){ // ((10+20),10)
+                        return target;
+                    }
+                }
+            }
+
+
+            else if(entry[i].type == TYPE_TOKEN){
+                if(wait_for_separator){
+                    printf("next argument while not having a ','");
+                }
+                function_argument arg;
+                feather_variable* var=  find_variable_value(entry[i].data);
+                arg.type = var->get_type();
+                arg.value = var->get_value();
+                target.push(arg);
+                wait_for_separator = true;
+            }else if(entry[i].type == TYPE_NUMBER){
+                if(wait_for_separator){
+                    printf("next argument while not having a ','");
+                }
+                function_argument arg;
+                arg.type = VAR_TYPE_INT;
+                arg.value = atoi(entry[i].data);
+                target.push(arg);
+                wait_for_separator = true;
+            }else if(entry[i].type == TYPE_SPECIFIC){
+                if(entry[i].subtype == NAME_LIST_DELIMIT){
+                    if(wait_for_separator){
+                        wait_for_separator = false;
+                    }
+                }
+            }
+
+        }
+        return target;
+    }
     uint64_t feather_virtual_machine::interpret_multiple_entry(feather_lexer_entry *entry, uint64_t count)
     {
         uint64_t last_result = 0;
@@ -73,7 +122,7 @@ namespace fsl
         {
             if (entry[i].type == TYPE_TOKEN)
             {
-                if (entry[i + 1].type == TYPE_DELIMITOR && entry[i + 2].type == TYPE_DELIMITOR)
+                if (entry[i + 1].type == TYPE_DELIMITOR && entry[i + 2].type == TYPE_DELIMITOR) // function only called with no argument
                 {
                     feather_function *function = find_function_definition(entry[i].data);
                     if (function == nullptr)
@@ -84,12 +133,37 @@ namespace fsl
                     last_result = result;
                     programm_counter.pop();
                     return last_result;
+                }else if(entry[i+1].type == TYPE_DELIMITOR){
+                    printf("calling function with argument %s \n", entry[i].data);
+                    feather_function *function = find_function_definition(entry[i].data);
+
+                    if (function == nullptr)
+                    {
+                        printf("function not founded %s \n", entry[i].data);
+                        return -1;
+                    }
+                    feather_vector<function_argument> list = generate_argument_list(entry, count, i+1 );
+
+                    if(!function->set_valid_argument(list)){
+                        printf("function not valid %s \n", entry[i].data);
+                        return -1;
+                    }
+                    uint64_t start = (find_function_start(*function));
+
+                    programm_counter.push(start); // just push next thing
+                    for(size_t i = 0; i < list.get_length(); i++){
+                        printf("added argument %s \n", list[i]->name);
+                        programm_counter.current_var_list().add_variable(list[i]->value, list[i]->name, list[i]->type);
+                    }
+                    run_code_without_pushing_context(start);
+                    list.destroy();
+                    programm_counter.pop();
                 }
             } // to thing
               // if there is a ';' after it is a variable definition
               // if there is a '=' after it is a variable assignation
               // if there is a '(' after it is a function call
-            else if (entry[i].type == TYPE_SPECIFIC && entry[i].subtype != NAME_FUNC)
+            else if (entry[i].type == TYPE_SPECIFIC && entry[i].subtype != NAME_FUNC && entry[i].subtype != NAME_LIST_DELIMIT)
             { // specific can only be on the first word of a line
                 if (i != 0)
                 {

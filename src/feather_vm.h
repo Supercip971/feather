@@ -49,6 +49,7 @@ namespace fsl
         fsl::lexer main_lexer;
         feather_lexer_info *lexer_info;
         feather_programm_counter programm_counter;
+        feather_vector<function_argument> generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start /* start for '('*/);
         feather_vector<feather_function> function_list;
         uint64_t find_function_start(feather_function function); // for later pre definition too
         feather_function *find_function_definition(const char *name);

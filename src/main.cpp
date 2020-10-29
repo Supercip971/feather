@@ -23,9 +23,17 @@
 int main()
 {
     const char *feather_code =
+
+
+        ""
+        "func myanother(int a, int b){ \n"
+        "   int c = b + 2 ; \n"
+        "} \n"
         "func myfunction() -> int {\n"
+        "    "
+        "    myanother(10,20); \n"
         "    int i = 13 ; \n"
-        "    int v = i - 3 + 4 * 2  ; \n"
+        "    int v = i-3 + 4 * 2; \n"
         "    return v ;"
         "}\n"
         "\n"
