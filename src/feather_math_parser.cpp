@@ -113,13 +113,16 @@ namespace fsl
         }
         return math_vector[0]->value;
     }
-    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, feather_virtual_machine *target)
+    uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement,uint64_t endstatement_subtype, feather_virtual_machine *target)
     {
         math_vector.create();
         bool has_delimitor = false;
         bool start_read_token = false;
-        for (uint64_t i = count; entry[i].type != end_statement; i++)
+        for (uint64_t i = count; ; i++)
         {
+            if(entry[i].type == end_statement && entry[i].subtype == endstatement_subtype){
+                break;
+            }
             math_entry current = {0};
             if (entry[i].type == TYPE_OPERATOR || entry[i].type == TYPE_DELIMITOR)
             {

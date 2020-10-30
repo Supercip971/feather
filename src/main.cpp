@@ -31,7 +31,7 @@ int main()
         "} \n"
         "func myfunction() -> int {\n"
         "    "
-        "    myanother(10,20); \n"
+        "    myanother(5+10 , 20); \n"
         "    int i = 13 ; \n"
         "    int v = i-3 + 4 * 2; \n"
         "    return v ;"

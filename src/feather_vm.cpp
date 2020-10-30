@@ -19,11 +19,11 @@ namespace fsl
         lexer_info = main_lexer.get_info();
     }
 
-    uint64_t feather_virtual_machine::interpret_subcode(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement)
+    uint64_t feather_virtual_machine::interpret_subcode(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement,uint64_t endstatement_subtype)
     {
         feather_math_expression expression = feather_math_expression();
 
-        return expression.interpret(entry, count, end_statement, this);
+        return expression.interpret(entry, count, end_statement,endstatement_subtype, this);
     }
     uint64_t feather_virtual_machine::interpret_line_specific(feather_lexer_entry *entry, uint64_t entry_id)
     {
@@ -52,14 +52,14 @@ namespace fsl
             }
             else
             {
-                uint64_t r = interpret_subcode(entry, entry_id + 3, TYPE_END_OF_LINE); //
+                uint64_t r = interpret_subcode(entry, entry_id + 3, TYPE_END_OF_LINE, 0); //
                 list.find_variable(entry[entry_id + 1].data)->set_value(r);
                 printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_value());
             }
             return 0;
         }else if(entry[entry_id].subtype == NAME_RETURN){
 
-            uint64_t r = interpret_subcode(entry, entry_id + 1, TYPE_END_OF_LINE); //
+            uint64_t r = interpret_subcode(entry, entry_id + 1, TYPE_END_OF_LINE, 0); //
             printf("returning %i \n", r);
             return r;
         }
@@ -72,6 +72,10 @@ namespace fsl
         int current_offset = 0;
         bool wait_for_separator = false;
         for(int i = start; i<count; i++){
+            bool is_current_list_delimit = (entry[i].type  == TYPE_SPECIFIC && entry[i].subtype == NAME_LIST_DELIMIT);
+
+            bool is_next_list_delimit = (entry[i+ 1].type  == TYPE_SPECIFIC && entry[i+1].subtype == NAME_LIST_DELIMIT);
+            bool is_next_end = ((current_offset == 1) && (entry[i].type == TYPE_DELIMITOR && entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE));
             if(entry[i].type == TYPE_DELIMITOR){
                 if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_OPEN){
                     current_offset++;
@@ -82,6 +86,50 @@ namespace fsl
                         return target;
                     }
                 }
+            }else if(!is_next_list_delimit && !is_next_end && !is_current_list_delimit){
+
+                printf("entry %s next expression \n", entry[i].data);
+                function_argument arg;
+                bool is_last = false;
+
+                arg.type = VAR_TYPE_INT;
+                bool is_next_delimit = false;
+                for(int j = 0; j < 100; j++){
+                    if(entry[i+j].type == TYPE_DELIMITOR){
+                        if(entry[i+j].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                            break;
+                        }
+                    }else if(entry[i+j].type == TYPE_SPECIFIC){
+                        if(entry[i+j].subtype == NAME_LIST_DELIMIT){
+                            is_next_delimit = true;
+                            break;
+                        }
+                    }
+                }
+                if(is_next_delimit){
+                    arg.value = interpret_subcode(entry, i,TYPE_SPECIFIC, NAME_LIST_DELIMIT);
+                }else{
+                    arg.value = interpret_subcode(entry, i,TYPE_DELIMITOR, DELIMITOR_ARGUMENT_BLOCK_CLOSE);
+
+                }
+                target.push(arg);
+                while(true){
+                    if(entry[i].type == TYPE_DELIMITOR){
+                        if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                            i--;
+                            break;
+                        }
+                    }else if(entry[i].type == TYPE_SPECIFIC){
+                        if(entry[i].subtype == NAME_LIST_DELIMIT){
+                            is_next_delimit = true;
+                            i--;
+                            break;
+                        }
+                    }
+                    i++;
+                }
+                wait_for_separator = true;
+
             }
 
 
@@ -104,12 +152,6 @@ namespace fsl
                 arg.value = atoi(entry[i].data);
                 target.push(arg);
                 wait_for_separator = true;
-            }else if(entry[i].type == TYPE_SPECIFIC){
-                if(entry[i].subtype == NAME_LIST_DELIMIT){
-                    if(wait_for_separator){
-                        wait_for_separator = false;
-                    }
-                }
             }
 
         }
