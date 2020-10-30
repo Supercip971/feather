@@ -346,6 +346,9 @@ namespace fsl
                             printf("%c", d);
                         }
                     }
+                }else if(arg.get_entry(i)->type == VAR_TYPE_INT){
+
+                    printf("%i", arg.get_entry(i)->value);
                 }
                 else
                 {
