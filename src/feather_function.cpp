@@ -59,6 +59,7 @@ namespace fsl
             printf("not valid function creation\n");
             return;
         }
+        special = false;
         name = d[entry + 1].data;
         line = d[entry].line;
         printf("creating function named %s \n", name);
@@ -90,7 +91,13 @@ namespace fsl
             start++;
         }
     }
-
+    feather_function::feather_function(const char *special_name, void (*callback)(feather_vector<function_argument> arg))
+    {
+        name = special_name;
+        line = 0;
+        special = true;
+        tocallback = callback;
+    }
     bool feather_function::set_valid_argument(feather_vector<function_argument> &target_arg_list)
     {
         if (target_arg_list.get_length() != arguments.get_length())
