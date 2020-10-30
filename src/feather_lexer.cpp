@@ -48,6 +48,8 @@ namespace fsl
         bool op = false;
         bool eol = false;
         bool del = false;
+
+        bool wait_for_string_end = false;
         uint64_t start_pos = *current_position;
 
         while (true)
@@ -60,6 +62,13 @@ namespace fsl
                 return nullptr;
             }
             char current_char = data_copy[*current_position];
+            if(wait_for_string_end && current_char == '"'){
+                (*current_position)++;
+                break;
+            }else if(wait_for_string_end){
+                (*current_position)++;
+                continue;
+            }
             if (current_char == ' ' || current_char == '\n')
             {
                 (*current_position)++;
@@ -90,6 +99,10 @@ namespace fsl
                     eol = true;
                 }
                 break;
+            }if (data_copy[*current_position] == '"')
+            {
+
+                    wait_for_string_end = true;
             }
             if (is_an_operator(data_copy + *current_position))
             {
@@ -193,6 +206,8 @@ namespace fsl
             else if (entry_to_print->type == TYPE_NUMBER)
             {
                 printf("[number] %s\n", entry_to_print->data);
+            }else if(entry_to_print->type == TYPE_STATIC_STRING){
+                printf("[string] %s\n", entry_to_print->data);
             }
         }
         global_info = info;
@@ -260,9 +275,12 @@ namespace fsl
                 {
                     entry_to_edit->type = TYPE_NUMBER;
                 }
-                else
+                else if(result[0] == '"')
                 {
+                    entry_to_edit->type = TYPE_STATIC_STRING;
+                }else{
                     entry_to_edit->type = TYPE_TOKEN;
+
                 }
 
                 entry_to_edit->subtype = 0; // later we will check for func or other declaration
