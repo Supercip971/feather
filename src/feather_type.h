@@ -14,7 +14,8 @@ namespace fsl
         TYPE_DELIMITOR = 3,
         TYPE_TOKEN = 4,
         TYPE_END_OF_LINE = 5,
-        TYPE_NUMBER = 6
+        TYPE_NUMBER = 6,
+        TYPE_STATIC_STRING = 7
     };
 
     // ---------------- FEATHER OPERATOR ----------------
