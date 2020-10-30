@@ -34,25 +34,10 @@ namespace fsl
         new_entry.value = result;
 
         uint64_t target_to_insert = operator_is_at - 1;
-        printf("\n");
-        printf("\n");
+
         for (int i = 0; i < 3; i++)
         {
-            printf("\n");
-            for (int j = 0; j < 10; j++)
-            {
 
-                if (math_vector[j]->type == TYPE_NUMBER)
-                {
-
-                    printf("[%i][%i] %i \n", operator_is_at, j, math_vector[j]->value);
-                }
-                else if (math_vector[j]->type == TYPE_OPERATOR)
-                {
-
-                    printf("[%i][%i] %s \n", operator_is_at, j, feather_operator_list.find_from_co((feather_operator)math_vector[j]->operators));
-                }
-            }
             math_vector.remove_entry(target_to_insert);
         }
         math_vector.insert_entry(target_to_insert, new_entry);
@@ -89,22 +74,7 @@ namespace fsl
                     }
                 }
             }
-            printf("\n === \n");
-            for (int j = 0; j < 10; j++)
-            {
 
-                if (math_vector[j]->type == TYPE_NUMBER)
-                {
-
-                    printf("[%i][%i] %x \n", current_level, j, math_vector[j]->value);
-                }
-                else if (math_vector[j]->type == TYPE_OPERATOR)
-                {
-
-                    printf("[%i][%i] %s \n", current_level, j, feather_operator_list.find_from_co((feather_operator)math_vector[j]->operators));
-                }
-            }
-            printf("\n === \n");
             if (current_level_number != 0)
             {
                 current_level_number = 0;
@@ -147,7 +117,7 @@ namespace fsl
             {
 
                 current.type = TYPE_NUMBER;
-                printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_storage()->get_value());
+           //     printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_storage()->get_value());
                 current.value = (target->find_variable_value(entry[i].data)->get_storage()->get_value());
                 math_vector.push(current);
             }
@@ -158,20 +128,7 @@ namespace fsl
         }
         if (!has_delimitor) // just interpret math expression
         {
-            for (int j = 0; j < 10; j++)
-            {
 
-                if (math_vector[j]->type == TYPE_NUMBER)
-                {
-
-                    printf("[%i][%i] %x \n", 0, j, math_vector[j]->value);
-                }
-                else if (math_vector[j]->type == TYPE_OPERATOR)
-                {
-
-                    printf("[%i][%i] %s \n", 0, j, feather_operator_list.find_from_co((feather_operator)math_vector[j]->operators));
-                }
-            }
             return interpret_region(0, math_vector.get_length());
         }
 

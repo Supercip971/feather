@@ -13,9 +13,6 @@ namespace fsl
 
     feather_virtual_machine::feather_virtual_machine(const char *code_data)
     {
-        printf("loading feather virtual machine\n");
-        printf("loading lexer \n");
-
         main_lexer = lexer(code_data);
         lexer_info = main_lexer.get_info();
     }
@@ -35,7 +32,7 @@ namespace fsl
             {
                 printf("invalid next type after entry %s, it should be a token \n", entry[entry_id + 1].data);
             }
-            printf("creating variable of type %s named %s \n", entry[entry_id].data, entry[entry_id + 1].data);
+        //    printf("creating variable of type %s named %s \n", entry[entry_id].data, entry[entry_id + 1].data);
             feather_variable_list &list = programm_counter.current_var_list();
 
             list.add_variable(0, entry[entry_id + 1].data, (feather_variable_type)entry[entry_id].subtype);
@@ -57,7 +54,7 @@ namespace fsl
                 int_type t;
                 t.init(&r);
                 list.find_variable(entry[entry_id + 1].data)->get_storage()->set((variable_type *)&t);
-                printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_storage()->get_value());
+                //printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_storage()->get_value());
             }
             return 0;
         }
@@ -65,7 +62,7 @@ namespace fsl
         {
 
             uint64_t r = interpret_subcode(entry, entry_id + 1, TYPE_END_OF_LINE, 0); //
-            printf("returning %i \n", r);
+        //    printf("returning %i \n", r);
             return r;
         }
 
@@ -103,7 +100,6 @@ namespace fsl
                 function_argument arg;
                 arg.name = "";
                 arg.type = VAR_TYPE_STRING;
-                printf("string argument %s \n", entry[i].data);
                 arg.value = (uint64_t)entry[i].data;
                 target->push(arg);
                 wait_for_separator = true;
@@ -111,7 +107,7 @@ namespace fsl
             else if (!is_next_list_delimit && !is_next_end && !is_current_list_delimit)
             {
 
-                printf("entry %s next expression \n", entry[i].data);
+            //    printf("entry %s next expression \n", entry[i].data);
                 function_argument arg;
                 bool is_last = false;
 
@@ -205,7 +201,7 @@ namespace fsl
             {
                 if (entry[i + 1].type == TYPE_DELIMITOR && entry[i + 2].type == TYPE_DELIMITOR) // function only called with no argument
                 {
-                    printf("calling function %s \n", entry[i].data);
+                   // printf("calling function %s \n", entry[i].data);
                     feather_function *function = find_function_definition(entry[i].data);
                     if (function == nullptr)
                     {
@@ -218,7 +214,7 @@ namespace fsl
                 }
                 else if (entry[i + 1].type == TYPE_DELIMITOR)
                 {
-                    printf("calling function with argument %s \n", entry[i].data);
+                 //   printf("calling function with argument %s \n", entry[i].data);
                     feather_function *function = find_function_definition(entry[i].data);
 
                     if (function == nullptr)
@@ -246,7 +242,7 @@ namespace fsl
                         programm_counter.push(start); // just push next thing
                         for (size_t i = 0; i < list->get_length(); i++)
                         {
-                            printf("added argument %s \n", list->get_entry(i)->name);
+                         //   printf("added argument %s \n", list->get_entry(i)->name);
                             programm_counter.current_var_list().add_variable(list->get_entry(i)->value, list->get_entry(i)->name, list->get_entry(i)->type);
                         }
                         run_code_without_pushing_context(start);
@@ -261,11 +257,7 @@ namespace fsl
               // if there is a '(' after it is a function call
             else if (entry[i].type == TYPE_SPECIFIC && entry[i].subtype != NAME_FUNC && entry[i].subtype != NAME_LIST_DELIMIT)
             { // specific can only be on the first word of a line
-                if (i != 0)
-                {
-                    printf("specific entry isn't at the start of the line %i (%s) / %i\n", entry[i].line, entry[i].data, i);
-                    printf("previous entry %s \n", entry[i - 1].data);
-                }
+
                 last_result = interpret_line_specific(entry, i);
                 return last_result;
             }
@@ -275,7 +267,7 @@ namespace fsl
 
     uint64_t feather_virtual_machine::run_code_without_pushing_context(uint64_t from)
     {
-        printf("jumping at %i \n", from);
+       // printf("jumping at %i \n", from);
         uint64_t last_result = 0;
         uint64_t current_context = 1;
         uint64_t current_line_entry = 0;
@@ -380,7 +372,7 @@ namespace fsl
             printf("no main function founded  \n");
             return;
         }
-        printf("main function founded at line %x \n", main_entry->get_line());
+       // printf("main function founded at line %x \n", main_entry->get_line());
         programm_counter.current_var_list().create();
         run_code(main_entry->get_start());
     }

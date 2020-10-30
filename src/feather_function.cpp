@@ -21,18 +21,18 @@ namespace fsl
                 {
                     if (d[start + 2].type == TYPE_DELIMITOR && d[start + 2].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
                     {
-                        printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
+                   //     printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
                         arguments.push({d[start + 1].data, (feather_variable_type)d[start].subtype});
                         break;
                     }
                     else if (d[start + 2].type == TYPE_SPECIFIC && d[start + 2].subtype == NAME_LIST_DELIMIT)
                     {
-                        printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
+               //         printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
                         arguments.push({d[start + 1].data, (feather_variable_type)d[start].subtype});
                     }
                     else
                     {
-                        printf("invalid element %s \n", d[start + 2].data);
+                 //       printf("invalid element %s \n", d[start + 2].data);
                     }
                 }
                 else
@@ -62,7 +62,7 @@ namespace fsl
         special = false;
         name = d[entry + 1].data;
         line = d[entry].line;
-        printf("creating function named %s \n", name);
+       // printf("creating function named %s \n", name);
         start = entry;
         return_type = 0;
         init_argument(d, entry);
@@ -84,7 +84,7 @@ namespace fsl
                         break;
                     }
 
-                    printf("return type is %i \n ", d[start + 1].subtype);
+             //       printf("return type is %i \n ", d[start + 1].subtype);
                     return_type = d[start + 1].subtype;
                 }
             }

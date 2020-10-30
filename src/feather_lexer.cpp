@@ -170,19 +170,19 @@ namespace fsl
         data_length = strlen(data_copy);
         uint64_t test = 0;
         char *result = next_word(&test);
-        while (result != nullptr)
+     /*   while (result != nullptr)
         {
             printf("%i | %s \n", test, result);
             free(result);
             result = next_word(&test);
-        }
+        }*/
         feather_lexer_info *info = generate_information();
         uint64_t last_line = 0;
         for (int i = 0; i < info->entry_count; i++)
         {
 
             feather_lexer_entry *entry_to_print = &info->entry[i];
-            if (entry_to_print->line != last_line)
+        /*    if (entry_to_print->line != last_line)
             {
                 last_line = entry_to_print->line;
                 printf(" [===] at line %i \n", last_line);
@@ -214,7 +214,7 @@ namespace fsl
             else if (entry_to_print->type == TYPE_STATIC_STRING)
             {
                 printf("[string] %s\n", entry_to_print->data);
-            }
+            }*/
         }
         global_info = info;
     }

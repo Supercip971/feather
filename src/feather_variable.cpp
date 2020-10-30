@@ -71,7 +71,6 @@ namespace fsl
 
         if (var_list == nullptr)
         {
-            printf("creating var list \n");
             create();
         }
         if (find_variable(name) != nullptr)
@@ -125,7 +124,6 @@ namespace fsl
                 return &var_list[i];
             }
         }
-        printf("variable with name %s not founded \n", name);
         return nullptr;
     }
 
