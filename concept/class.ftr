@@ -1,0 +1,48 @@
+
+// just a class
+
+
+class myclass{
+  // default public 
+
+  public:
+
+  int myvar;
+
+
+  readonly int onlyreadable;
+
+  func myclass_function() -> int{
+
+    myvar = 0;
+
+    .myvar = 8; // only this class 
+
+
+  };
+
+
+  
+
+
+  
+
+  
+
+  private:
+
+};
+// why default public ?
+
+// when you search for implementation the first thing you want to see
+// is function that you can call
+// not function that you can't use
+
+
+
+class child -> myclass{
+
+  @parent; // you can change parent access by moving parent element in 'private' or 'public'
+  
+
+};

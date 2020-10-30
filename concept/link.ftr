@@ -1,0 +1,8 @@
+// concept 1 linking
+
+int v = 0;
+
+
+int c -> v;
+
+// they are friend forever

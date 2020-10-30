@@ -1,0 +1,22 @@
+import "system";
+
+// yeah that's good but you can do some others thing
+
+
+import("system", only_used);
+
+
+
+
+// you can import only dynammicaly, when you need them
+
+import("system", dynamic);
+
+
+func main(){
+
+  printf() // import system here 
+
+}
+
+
