@@ -111,7 +111,7 @@ namespace fsl
                 current_level--;
             }
         }
-        return math_vector[0]->value;
+        return math_vector[start]->value;
     }
     uint64_t feather_math_expression::interpret(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, uint64_t endstatement_subtype, feather_virtual_machine *target)
     {
@@ -156,7 +156,7 @@ namespace fsl
                 printf("invalid math expression entry %s \n", entry[i].data);
             }
         }
-        if (!has_delimitor)
+        if (!has_delimitor) // just interpret math expression
         {
             for (int j = 0; j < 10; j++)
             {
