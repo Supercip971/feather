@@ -1,23 +1,31 @@
 #include "feather_variable.h"
-
+#include "feather_system_type.h"
 namespace fsl
 {
 
     feather_variable::feather_variable()
     {
         garbage = true;
-        value = false;
         variable_name = nullptr;
         type = VAR_TYPE_ADDRESS;
-        value = 0;
     }
     feather_variable::feather_variable(int64_t val, const char *name, feather_variable_type var_type)
     {
 
         variable_name = (char *)malloc(strlen(name) + 1);
         memcpy(variable_name, name, strlen(name) + 1);
-        value = val;
+
         type = var_type;
+        if (type == feather_variable_type::VAR_TYPE_INT)
+        {
+            storage = new int_type();
+            int d = 0;
+            storage->init(&d);
+        }
+        else
+        {
+            printf("type %i is not supported \n", type);
+        }
     }
 
     feather_variable_list::feather_variable_list()
@@ -54,7 +62,7 @@ namespace fsl
                 continue;
             }
 
-            printf("%s = %i \n", var_list[i].get_var_name(), var_list[i].get_value());
+            printf("%s = %i \n", var_list[i].get_var_name(), var_list[i].get_storage()->get_value());
         }
     }
     void feather_variable_list::add_variable(uint64_t value, const char *name, feather_variable_type type)

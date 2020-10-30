@@ -146,8 +146,8 @@ namespace fsl
             {
 
                 current.type = TYPE_NUMBER;
-                printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_value());
-                current.value = (target->find_variable_value(entry[i].data)->get_value());
+                printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_storage()->get_value());
+                current.value = (target->find_variable_value(entry[i].data)->get_storage()->get_value());
                 math_vector.push(current);
             }
             else
