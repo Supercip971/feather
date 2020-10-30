@@ -78,7 +78,7 @@ namespace fsl
             {"return", NAME_RETURN},
             {"class", NAME_CLASS},
             {"->", NAME_RETURN_TYPE},
-            {",",NAME_LIST_DELIMIT}};
+            {",", NAME_LIST_DELIMIT}};
     LIST_DELCLARATION(feather_specific_item_list, specific_item, const char *, feather_specific_item);
 
     // ---------------- FEATHER DELIMITOR ----------------

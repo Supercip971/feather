@@ -9,27 +9,39 @@ namespace fsl
         end = 0;
         dady = nullptr;
     }
-    void feather_function::init_argument(feather_lexer_entry *d, uint64_t entry){
+    void feather_function::init_argument(feather_lexer_entry *d, uint64_t entry)
+    {
         arguments.create();
-        while(true){
+        while (true)
+        {
 
-            if(d[start].type == TYPE_SPECIFIC && d[start].subtype < NAME_IF){
-                if(d[start+1].type == TYPE_TOKEN){
-                    if(d[start+2].type == TYPE_DELIMITOR && d[start+2].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE ){
-                        printf("argument %s of type %s \n", d[start+1].data, d[start].data);
-                        arguments.push({d[start+1].data,(feather_variable_type)d[start].subtype});
+            if (d[start].type == TYPE_SPECIFIC && d[start].subtype < NAME_IF)
+            {
+                if (d[start + 1].type == TYPE_TOKEN)
+                {
+                    if (d[start + 2].type == TYPE_DELIMITOR && d[start + 2].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
+                    {
+                        printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
+                        arguments.push({d[start + 1].data, (feather_variable_type)d[start].subtype});
                         break;
-                    }else if(d[start+2].type == TYPE_SPECIFIC && d[start+2].subtype == NAME_LIST_DELIMIT){
-                        printf("argument %s of type %s \n", d[start+1].data, d[start].data);
-                        arguments.push({d[start+1].data,(feather_variable_type)d[start].subtype});
-                    }else{
-                        printf("invalid element %s \n", d[start+2].data);
                     }
-                }else{
+                    else if (d[start + 2].type == TYPE_SPECIFIC && d[start + 2].subtype == NAME_LIST_DELIMIT)
+                    {
+                        printf("argument %s of type %s \n", d[start + 1].data, d[start].data);
+                        arguments.push({d[start + 1].data, (feather_variable_type)d[start].subtype});
+                    }
+                    else
+                    {
+                        printf("invalid element %s \n", d[start + 2].data);
+                    }
+                }
+                else
+                {
                     printf("invalid function declaration\n");
                 }
             }
-            if(d[start].type == TYPE_DELIMITOR && d[start].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+            if (d[start].type == TYPE_DELIMITOR && d[start].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
+            {
                 break;
             }
             start++;
@@ -47,12 +59,12 @@ namespace fsl
             printf("not valid function creation\n");
             return;
         }
-        name = d[entry+1].data;
+        name = d[entry + 1].data;
         line = d[entry].line;
         printf("creating function named %s \n", name);
         start = entry;
-        return_type  =0;
-        init_argument(d,entry);
+        return_type = 0;
+        init_argument(d, entry);
 
         while (true)
         {
@@ -64,7 +76,8 @@ namespace fsl
             {
                 if (d[start].subtype == NAME_RETURN_TYPE)
                 {
-                    if(d[start + 1].type != TYPE_SPECIFIC){
+                    if (d[start + 1].type != TYPE_SPECIFIC)
+                    {
                         printf("not valid function creation\n");
                         // invalid
                         break;
@@ -78,16 +91,22 @@ namespace fsl
         }
     }
 
-    bool feather_function::set_valid_argument(feather_vector<function_argument>& target_arg_list){
-        if(target_arg_list.get_length() != arguments.get_length()){
-            printf("not valid length %i where it should be %i \n",target_arg_list.get_length(), arguments.get_length());
+    bool feather_function::set_valid_argument(feather_vector<function_argument> &target_arg_list)
+    {
+        if (target_arg_list.get_length() != arguments.get_length())
+        {
+            printf("not valid length %i where it should be %i \n", target_arg_list.get_length(), arguments.get_length());
             return false;
         }
-        for(int i = 0; i < arguments.get_length(); i++){
-            if(target_arg_list[i]->type != arguments[i]->type){
+        for (int i = 0; i < arguments.get_length(); i++)
+        {
+            if (target_arg_list[i]->type != arguments[i]->type)
+            {
                 printf("invalid type for %s \n", arguments[i]->name);
                 return false;
-            }else{
+            }
+            else
+            {
                 target_arg_list[i]->name = arguments[i]->name;
             }
         }
@@ -107,10 +126,12 @@ namespace fsl
         return return_type;
     }
 
-    uint64_t feather_function::get_line(){
+    uint64_t feather_function::get_line()
+    {
         return line;
     }
-    const char* feather_function::get_name(){
+    const char *feather_function::get_name()
+    {
         return name;
     }
 

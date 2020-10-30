@@ -2,6 +2,7 @@
 #include "feather_vm.h"
 #include "feather_lexer.h"
 #include "feather_math_parser.h"
+#include "feather_system_type.h"
 #include "feather_type.h"
 namespace fsl
 {
@@ -19,11 +20,11 @@ namespace fsl
         lexer_info = main_lexer.get_info();
     }
 
-    uint64_t feather_virtual_machine::interpret_subcode(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement,uint64_t endstatement_subtype)
+    uint64_t feather_virtual_machine::interpret_subcode(feather_lexer_entry *entry, uint64_t count, uint64_t end_statement, uint64_t endstatement_subtype)
     {
         feather_math_expression expression = feather_math_expression();
 
-        return expression.interpret(entry, count, end_statement,endstatement_subtype, this);
+        return expression.interpret(entry, count, end_statement, endstatement_subtype, this);
     }
     uint64_t feather_virtual_machine::interpret_line_specific(feather_lexer_entry *entry, uint64_t entry_id)
     {
@@ -53,11 +54,15 @@ namespace fsl
             else
             {
                 uint64_t r = interpret_subcode(entry, entry_id + 3, TYPE_END_OF_LINE, 0); //
-                list.find_variable(entry[entry_id + 1].data)->set_value(r);
-                printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_value());
+                int_type t;
+                t.init(&r);
+                list.find_variable(entry[entry_id + 1].data)->get_storage()->set((variable_type *)&t);
+                printf("var value %i \n", find_variable_value(entry[entry_id + 1].data)->get_storage()->get_value());
             }
             return 0;
-        }else if(entry[entry_id].subtype == NAME_RETURN){
+        }
+        else if (entry[entry_id].subtype == NAME_RETURN)
+        {
 
             uint64_t r = interpret_subcode(entry, entry_id + 1, TYPE_END_OF_LINE, 0); //
             printf("returning %i \n", r);
@@ -66,27 +71,35 @@ namespace fsl
 
         return 0;
     }
-    feather_vector<function_argument> feather_virtual_machine::generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start){
+    feather_vector<function_argument> feather_virtual_machine::generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start)
+    {
         feather_vector<function_argument> target;
         target.create();
         int current_offset = 0;
         bool wait_for_separator = false;
-        for(int i = start; i<count; i++){
-            bool is_current_list_delimit = (entry[i].type  == TYPE_SPECIFIC && entry[i].subtype == NAME_LIST_DELIMIT);
+        for (int i = start; i < count; i++)
+        {
+            bool is_current_list_delimit = (entry[i].type == TYPE_SPECIFIC && entry[i].subtype == NAME_LIST_DELIMIT);
 
-            bool is_next_list_delimit = (entry[i+ 1].type  == TYPE_SPECIFIC && entry[i+1].subtype == NAME_LIST_DELIMIT);
+            bool is_next_list_delimit = (entry[i + 1].type == TYPE_SPECIFIC && entry[i + 1].subtype == NAME_LIST_DELIMIT);
             bool is_next_end = ((current_offset == 1) && (entry[i].type == TYPE_DELIMITOR && entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE));
-            if(entry[i].type == TYPE_DELIMITOR){
-                if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_OPEN){
+            if (entry[i].type == TYPE_DELIMITOR)
+            {
+                if (entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_OPEN)
+                {
                     current_offset++;
                 }
-                if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                if (entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
+                {
                     current_offset--;
-                    if(current_offset == 0){ // ((10+20),10)
+                    if (current_offset == 0)
+                    { // ((10+20),10)
                         return target;
                     }
                 }
-            }else if(!is_next_list_delimit && !is_next_end && !is_current_list_delimit){
+            }
+            else if (!is_next_list_delimit && !is_next_end && !is_current_list_delimit)
+            {
 
                 printf("entry %s next expression \n", entry[i].data);
                 function_argument arg;
@@ -94,33 +107,47 @@ namespace fsl
 
                 arg.type = VAR_TYPE_INT;
                 bool is_next_delimit = false;
-                for(int j = 0; j < 100; j++){
-                    if(entry[i+j].type == TYPE_DELIMITOR){
-                        if(entry[i+j].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                for (int j = 0; j < 100; j++)
+                {
+                    if (entry[i + j].type == TYPE_DELIMITOR)
+                    {
+                        if (entry[i + j].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
+                        {
                             break;
                         }
-                    }else if(entry[i+j].type == TYPE_SPECIFIC){
-                        if(entry[i+j].subtype == NAME_LIST_DELIMIT){
+                    }
+                    else if (entry[i + j].type == TYPE_SPECIFIC)
+                    {
+                        if (entry[i + j].subtype == NAME_LIST_DELIMIT)
+                        {
                             is_next_delimit = true;
                             break;
                         }
                     }
                 }
-                if(is_next_delimit){
-                    arg.value = interpret_subcode(entry, i,TYPE_SPECIFIC, NAME_LIST_DELIMIT);
-                }else{
-                    arg.value = interpret_subcode(entry, i,TYPE_DELIMITOR, DELIMITOR_ARGUMENT_BLOCK_CLOSE);
-
+                if (is_next_delimit)
+                {
+                    arg.value = interpret_subcode(entry, i, TYPE_SPECIFIC, NAME_LIST_DELIMIT);
+                }
+                else
+                {
+                    arg.value = interpret_subcode(entry, i, TYPE_DELIMITOR, DELIMITOR_ARGUMENT_BLOCK_CLOSE);
                 }
                 target.push(arg);
-                while(true){
-                    if(entry[i].type == TYPE_DELIMITOR){
-                        if(entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE){
+                while (true)
+                {
+                    if (entry[i].type == TYPE_DELIMITOR)
+                    {
+                        if (entry[i].subtype == DELIMITOR_ARGUMENT_BLOCK_CLOSE)
+                        {
                             i--;
                             break;
                         }
-                    }else if(entry[i].type == TYPE_SPECIFIC){
-                        if(entry[i].subtype == NAME_LIST_DELIMIT){
+                    }
+                    else if (entry[i].type == TYPE_SPECIFIC)
+                    {
+                        if (entry[i].subtype == NAME_LIST_DELIMIT)
+                        {
                             is_next_delimit = true;
                             i--;
                             break;
@@ -129,22 +156,25 @@ namespace fsl
                     i++;
                 }
                 wait_for_separator = true;
-
             }
 
-
-            else if(entry[i].type == TYPE_TOKEN){
-                if(wait_for_separator){
+            else if (entry[i].type == TYPE_TOKEN)
+            {
+                if (wait_for_separator)
+                {
                     printf("next argument while not having a ','");
                 }
                 function_argument arg;
-                feather_variable* var=  find_variable_value(entry[i].data);
+                feather_variable *var = find_variable_value(entry[i].data);
                 arg.type = var->get_type();
-                arg.value = var->get_value();
+                arg.value = var->get_storage()->get_value();
                 target.push(arg);
                 wait_for_separator = true;
-            }else if(entry[i].type == TYPE_NUMBER){
-                if(wait_for_separator){
+            }
+            else if (entry[i].type == TYPE_NUMBER)
+            {
+                if (wait_for_separator)
+                {
                     printf("next argument while not having a ','");
                 }
                 function_argument arg;
@@ -153,7 +183,6 @@ namespace fsl
                 target.push(arg);
                 wait_for_separator = true;
             }
-
         }
         return target;
     }
@@ -175,7 +204,9 @@ namespace fsl
                     last_result = result;
                     programm_counter.pop();
                     return last_result;
-                }else if(entry[i+1].type == TYPE_DELIMITOR){
+                }
+                else if (entry[i + 1].type == TYPE_DELIMITOR)
+                {
                     printf("calling function with argument %s \n", entry[i].data);
                     feather_function *function = find_function_definition(entry[i].data);
 
@@ -184,16 +215,18 @@ namespace fsl
                         printf("function not founded %s \n", entry[i].data);
                         return -1;
                     }
-                    feather_vector<function_argument> list = generate_argument_list(entry, count, i+1 );
+                    feather_vector<function_argument> list = generate_argument_list(entry, count, i + 1);
 
-                    if(!function->set_valid_argument(list)){
+                    if (!function->set_valid_argument(list))
+                    {
                         printf("function not valid %s \n", entry[i].data);
                         return -1;
                     }
                     uint64_t start = (find_function_start(*function));
 
                     programm_counter.push(start); // just push next thing
-                    for(size_t i = 0; i < list.get_length(); i++){
+                    for (size_t i = 0; i < list.get_length(); i++)
+                    {
                         printf("added argument %s \n", list[i]->name);
                         programm_counter.current_var_list().add_variable(list[i]->value, list[i]->name, list[i]->type);
                     }
@@ -219,12 +252,13 @@ namespace fsl
         return 0;
     }
 
-    uint64_t feather_virtual_machine::run_code_without_pushing_context(uint64_t from){
+    uint64_t feather_virtual_machine::run_code_without_pushing_context(uint64_t from)
+    {
         printf("jumping at %i \n", from);
         uint64_t last_result = 0;
-                uint64_t current_context = 1;
-                uint64_t current_line_entry = 0;
-                feather_lexer_entry *current_line = new feather_lexer_entry[64]; // max 64 entry in a 'line'
+        uint64_t current_context = 1;
+        uint64_t current_line_entry = 0;
+        feather_lexer_entry *current_line = new feather_lexer_entry[64]; // max 64 entry in a 'line'
         while (current_context != 0)
         {
 
@@ -268,7 +302,8 @@ namespace fsl
         programm_counter.push(from);
         return run_code_without_pushing_context(from);
     }
-    void feather_virtual_machine::init_function_list(){
+    void feather_virtual_machine::init_function_list()
+    {
 
         function_list.create();
         for (uint64_t i = 0; i < lexer_info->entry_count; i++)
@@ -277,7 +312,7 @@ namespace fsl
 
             if (entry->type == TYPE_SPECIFIC && entry->subtype == NAME_FUNC)
             { // that mean that the next should be the function name
-                function_list.push(feather_function(lexer_info->entry,i));
+                function_list.push(feather_function(lexer_info->entry, i));
             }
         }
     }
@@ -307,8 +342,10 @@ namespace fsl
     {
         bool verify_next = false;
 
-        for(int i =0; i< function_list.get_length();i++){
-            if(strcmp(name, function_list[i]->get_name()) == 0){
+        for (int i = 0; i < function_list.get_length(); i++)
+        {
+            if (strcmp(name, function_list[i]->get_name()) == 0)
+            {
                 return function_list[i];
             }
         }

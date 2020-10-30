@@ -10,9 +10,11 @@ namespace fsl
     bool lexer_feather_map_verification(const char *a, const char *b)
     {
         return (strncmp(a, b, strlen(a)) == 0);
-    }bool lexer_feather_map_operator_verification(const char *a, const char *b)
+    }
+    bool lexer_feather_map_operator_verification(const char *a, const char *b)
     {
-        if(strncmp(b, "->", 2) == 0){
+        if (strncmp(b, "->", 2) == 0)
+        {
             return false;
         }
         return (strncmp(a, b, strlen(a)) == 0);
@@ -68,17 +70,22 @@ namespace fsl
                 if (current_length != 1)
                 {
                     current_length--;
-                }else{
+                }
+                else
+                {
 
                     eol = true;
                 }
                 break;
-            }if (data_copy[*current_position] == ',')
+            }
+            if (data_copy[*current_position] == ',')
             {
                 if (current_length != 1)
                 {
                     current_length--;
-                }else{
+                }
+                else
+                {
 
                     eol = true;
                 }
@@ -89,7 +96,9 @@ namespace fsl
                 if (current_length != 1)
                 {
                     current_length--;
-                }else{
+                }
+                else
+                {
 
                     op = true;
                 }
@@ -100,7 +109,9 @@ namespace fsl
                 if (current_length != 1) // in the case of blabla( reduce length of 1
                 {
                     current_length--;
-                }else{
+                }
+                else
+                {
 
                     del = true;
                 }
