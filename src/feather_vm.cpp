@@ -71,10 +71,10 @@ namespace fsl
 
         return 0;
     }
-    feather_vector<function_argument> feather_virtual_machine::generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start)
+    feather_vector<function_argument> *feather_virtual_machine::generate_argument_list(feather_lexer_entry *entry, uint64_t count, uint64_t start)
     {
-        feather_vector<function_argument> target;
-        target.create();
+        feather_vector<function_argument> *target = new feather_vector<function_argument>();
+        target->create();
         int current_offset = 0;
         bool wait_for_separator = false;
         for (int i = start; i < count; i++)
@@ -97,6 +97,16 @@ namespace fsl
                         return target;
                     }
                 }
+            }
+            else if (entry[i].type == TYPE_STATIC_STRING)
+            {
+                function_argument arg;
+                arg.name = "";
+                arg.type = VAR_TYPE_STRING;
+                printf("string argument %s \n", entry[i].data);
+                arg.value = (uint64_t)entry[i].data;
+                target->push(arg);
+                wait_for_separator = true;
             }
             else if (!is_next_list_delimit && !is_next_end && !is_current_list_delimit)
             {
@@ -133,7 +143,7 @@ namespace fsl
                 {
                     arg.value = interpret_subcode(entry, i, TYPE_DELIMITOR, DELIMITOR_ARGUMENT_BLOCK_CLOSE);
                 }
-                target.push(arg);
+                target->push(arg);
                 while (true)
                 {
                     if (entry[i].type == TYPE_DELIMITOR)
@@ -168,7 +178,7 @@ namespace fsl
                 feather_variable *var = find_variable_value(entry[i].data);
                 arg.type = var->get_type();
                 arg.value = var->get_storage()->get_value();
-                target.push(arg);
+                target->push(arg);
                 wait_for_separator = true;
             }
             else if (entry[i].type == TYPE_NUMBER)
@@ -180,7 +190,7 @@ namespace fsl
                 function_argument arg;
                 arg.type = VAR_TYPE_INT;
                 arg.value = atoi(entry[i].data);
-                target.push(arg);
+                target->push(arg);
                 wait_for_separator = true;
             }
         }
@@ -195,6 +205,7 @@ namespace fsl
             {
                 if (entry[i + 1].type == TYPE_DELIMITOR && entry[i + 2].type == TYPE_DELIMITOR) // function only called with no argument
                 {
+                    printf("calling function %s \n", entry[i].data);
                     feather_function *function = find_function_definition(entry[i].data);
                     if (function == nullptr)
                     {
@@ -215,24 +226,34 @@ namespace fsl
                         printf("function not founded %s \n", entry[i].data);
                         return -1;
                     }
-                    feather_vector<function_argument> list = generate_argument_list(entry, count, i + 1);
 
-                    if (!function->set_valid_argument(list))
+                    feather_vector<function_argument> *list = generate_argument_list(entry, count, i + 1);
+                    if (function->is_special())
                     {
-                        printf("function not valid %s \n", entry[i].data);
-                        return -1;
+                        function->call_special(*list);
                     }
-                    uint64_t start = (find_function_start(*function));
+                    else
+                    {
 
-                    programm_counter.push(start); // just push next thing
-                    for (size_t i = 0; i < list.get_length(); i++)
-                    {
-                        printf("added argument %s \n", list[i]->name);
-                        programm_counter.current_var_list().add_variable(list[i]->value, list[i]->name, list[i]->type);
+                        if (!function->set_valid_argument(*list))
+                        {
+                            printf("function not valid %s \n", entry[i].data);
+                            return -1;
+                        }
+
+                        uint64_t start = (find_function_start(*function));
+
+                        programm_counter.push(start); // just push next thing
+                        for (size_t i = 0; i < list->get_length(); i++)
+                        {
+                            printf("added argument %s \n", list->get_entry(i)->name);
+                            programm_counter.current_var_list().add_variable(list->get_entry(i)->value, list->get_entry(i)->name, list->get_entry(i)->type);
+                        }
+                        run_code_without_pushing_context(start);
+                        programm_counter.pop();
                     }
-                    run_code_without_pushing_context(start);
-                    list.destroy();
-                    programm_counter.pop();
+                    list->destroy();
+                    delete list;
                 }
             } // to thing
               // if there is a ';' after it is a variable definition
@@ -302,10 +323,39 @@ namespace fsl
         programm_counter.push(from);
         return run_code_without_pushing_context(from);
     }
+
+    void feather_virtual_machine::vmprintf(feather_vector<function_argument> arg)
+    {
+    }
     void feather_virtual_machine::init_function_list()
     {
 
         function_list.create();
+        //
+        auto d = [](feather_vector<function_argument> arg) mutable {
+            for (int i = 0; i < arg.get_length(); i++)
+            {
+                if (arg.get_entry(i)->type == VAR_TYPE_STRING)
+                {
+                    for (int j = 0; j < strlen((char *)arg.get_entry(i)->value); j++)
+                    {
+                        char d = ((char *)arg.get_entry(i)->value)[j];
+                        if (d != '"')
+                        {
+
+                            printf("%c", d);
+                        }
+                    }
+                }
+                else
+                {
+                    printf("invalid type for printf %i \n", arg.get_entry(i)->type);
+                }
+
+                printf("\n");
+            }
+        };
+        function_list.push(feather_function("printf", d));
         for (uint64_t i = 0; i < lexer_info->entry_count; i++)
         {
             feather_lexer_entry *entry = &lexer_info->entry[i];
