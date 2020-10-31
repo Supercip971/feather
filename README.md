@@ -1,6 +1,6 @@
 # FEATHER
-feather is a scripting language for WingOS (my kernel) 
-it is a c++ scripting language with minimal dependencies in mind for the moment the only dependencies are : 
+feather is a scripting language for [WingOS](https://github.com/Supercip971/WingOS_x64) (my kernel) 
+it is a C++ inspired scripting language with minimal dependencies in mind for the moment the only dependencies are : 
 
  - stdint.h header (uint64_t 32_t ...)
  - printf (with %x %i and %s support)
