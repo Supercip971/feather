@@ -1,4 +1,6 @@
 #include "feather_math_parser.h"
+#include "feather_variable.h"
+#include <cstdio>
 #include <stddef.h>
 #include <stdlib.h>
 namespace fsl
@@ -115,9 +117,15 @@ namespace fsl
             }
             else if (entry[i].type == TYPE_TOKEN)
             {
-
+                if(target->find_variable_value(entry[i].data) == nullptr){
+                    printf("invalid var %s \n", entry[i].data);
+                    continue;
+                }
+                if(target->find_variable_value(entry[i].data)->get_type() == feather_variable_type::VAR_TYPE_STRING){
+                    printf("using variable %s as a string \n", entry[i].data);
+                    continue;;
+                }
                 current.type = TYPE_NUMBER;
-           //     printf("using variable %s for expression with value %i \n", entry[i].data, target->find_variable_value(entry[i].data)->get_storage()->get_value());
                 current.value = (target->find_variable_value(entry[i].data)->get_storage()->get_value());
                 math_vector.push(current);
             }
