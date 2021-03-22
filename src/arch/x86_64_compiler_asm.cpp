@@ -75,7 +75,10 @@ int x86_64_asm_generator::gen_add(int left_register, int right_register){
     return right_register;
 };
 int x86_64_asm_generator::gen_sub(int left_register, int right_register){
-    return 0;
+    gen_instruction("subq");
+    gen_two_reg_operator(right_register, left_register);
+    free_register(right_register);
+    return left_register;
 
 };
 int x86_64_asm_generator::gen_mul(int left_register, int right_register) {
