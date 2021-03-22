@@ -1,6 +1,7 @@
 #ifndef A24A3278_6B0E_4271_9600_1A363FB01DC1
 #define A24A3278_6B0E_4271_9600_1A363FB01DC1
 #include <string>
+#include "arch/compiler_asm_generator.h"
 
 enum class token_type : int{
     NULL_TOKEN,
@@ -49,7 +50,7 @@ class ast_node{
     void destroy();
 
     int interpret();
-    int generate();
+    int generate(asm_generator* generator);
     static ast_node* create_node(ast_type type, ast_node *left,
                           ast_node *right, int intvalue){
         ast_node* v = new ast_node();

@@ -112,40 +112,40 @@ void ast_node::destroy(){
     }
     delete this;
 }
-int ast_node::generate(){
+int ast_node::generate(asm_generator* generator){
     int left_register;
     int right_register;
     if(left){
-        left_register = left->generate();
+        left_register = left->generate(generator);
     }
     if(right){
-        right_register = right->generate();
+        right_register = right->generate(generator);
     }
 
     switch(type){
         case ast_type::DIVIDE:{
-            return left_ret / right_ret;
+            return generator->gen_div(left_register, right_register);
         }
         case ast_type::MULTIPLY:{
-            return left_ret * right_ret;
+            return generator->gen_mul(left_register, right_register);
         }
         case ast_type::ADD:{
-            return left_ret + right_ret;
+            return generator->gen_add(left_register, right_register);
         }
         case ast_type::SUBSTRACT:{
-            return left_ret - right_ret;
+            return generator->gen_sub(left_register, right_register);
         }
         case ast_type::INT_VALUE:{
-            return value;
+            return generator->gen_load(value);
         }
         case ast_type::NULL_TYPE:{
-            printf("using null type in ast interpret \n");
+            printf("using null type in ast generate \n");
             
             exit(-1);
             return 0;
         }
         default: {
-            printf("using undefined type in ast interpret \n");
+            printf("using undefined type in ast generate \n");
             
             exit(-21);
             return 0;
@@ -154,7 +154,7 @@ int ast_node::generate(){
     };
 }
 
-int ast_node::generate(){
+int ast_node::interpret(){
     int left_ret;
     int right_ret;
     if(left){
