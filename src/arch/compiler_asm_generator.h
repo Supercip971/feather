@@ -21,6 +21,7 @@ class asm_generator{
     virtual int gen_div(int left_register, int right_register) = 0;
     
     virtual int gen_load(int value) = 0;
+    virtual int gen_debug_print(int reg) = 0;
 };
 
 #endif /* D55FF439_F67E_46DF_85E6_E5BF39A8BE5A */
