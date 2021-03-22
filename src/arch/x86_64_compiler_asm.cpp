@@ -88,7 +88,13 @@ int x86_64_asm_generator::gen_mul(int left_register, int right_register) {
 };
 int x86_64_asm_generator::gen_div(int left_register, int right_register){
 
-    return 0;
+    gen_mov( "%rax", reg_table[left_register].name);
+    gen_single_line_instruction("cqo");
+    gen_one_arg_instruction("idivq", reg_table[right_register].name);
+
+    gen_mov(reg_table[left_register].name,  "%rax");
+    free_register(right_register);
+    return left_register;
 };
     
 int x86_64_asm_generator::gen_load(int value){
