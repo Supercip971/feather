@@ -21,7 +21,7 @@ int main(int argc, char** argv){
   
   generator->init_output();
   
-  v->generate(generator);
+  generator->gen_debug_print(v->generate(generator));
 
   generator->close_output_in_file("output.s");
 

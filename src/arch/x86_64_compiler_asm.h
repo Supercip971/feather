@@ -6,9 +6,7 @@
 class x86_64_asm_generator : public asm_generator{
     void gen_two_reg_operator(int reg1, int reg2); // like "r0, r1" "r8, r10", "eax, ebx" ....
     void gen_instruction(const char* instruction){
-        str += "\t";
-        str += instruction;
-        str += "\t";
+        stream << "\t" << instruction << "\t";
     }
     public:
     virtual void asm_start() override;

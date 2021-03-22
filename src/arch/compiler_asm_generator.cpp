@@ -2,15 +2,11 @@
 #include <fstream>
 #include <iostream>
 void asm_generator::init_output(){
-    str = "";
+    stream  = std::ofstream("./output.s");
+    stream.clear();
     asm_start();
 }
 void asm_generator::close_output_in_file(const char* out){
     asm_end();
-    printf("output asm: \n %s \n", str.c_str());
-
-    std::ofstream outstream("output.s");
-    outstream.clear();
-    outstream << str;
-    outstream.close();
+    stream.close();
 }

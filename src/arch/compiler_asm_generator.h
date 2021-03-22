@@ -1,9 +1,10 @@
 #ifndef D55FF439_F67E_46DF_85E6_E5BF39A8BE5A
 #define D55FF439_F67E_46DF_85E6_E5BF39A8BE5A
 #include <string>
+#include <fstream>
 class asm_generator{
     protected:
-    std::string str;
+    std::ofstream stream;
     
     public:
     virtual void asm_start() = 0;

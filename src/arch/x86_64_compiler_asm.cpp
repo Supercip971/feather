@@ -16,15 +16,12 @@ compiler_register reg_table[] = {
 #define REG_TABLE_SIZE (sizeof(reg_table)/sizeof(compiler_register))
 
 void x86_64_asm_generator::gen_two_reg_operator(int reg1, int reg2){
-    str += reg_table[reg1].name;
-    str += ", ";
-    str += reg_table[reg2].name;
-    str += "\n";
+    stream << reg_table[reg1].name << ", " << reg_table[reg2].name << "\n";
 }
 void x86_64_asm_generator::asm_start(){
-    str = "\t.text\n"
+    stream << "\t.text\n"
 	".LC0:\n"
-	"\t.string\t\"%x\\n\"\n"
+	"\t.string\t\"%d\\n\"\n"
 	"printint:\n"
 	"\tpushq\t%rbp\n"
 	"\tmovq\t%rsp, %rbp\n"
@@ -46,7 +43,7 @@ void x86_64_asm_generator::asm_start(){
 	"\tmovq	%rsp, %rbp\n";
 }
 void x86_64_asm_generator::asm_end(){
-    str += 
+    stream << 
     "\tmovl	$0, %eax\n"
 	"\tpopq	%rbp\n"
 	"\tret\n";
@@ -98,11 +95,7 @@ int x86_64_asm_generator::gen_load(int value){
     int reg = alloc_register();
 
     // waiting for the c++20 format library support
-    str += "\tmovq\t$";
-    str += std::to_string(value);
-    str += ", ";
-    str += reg_table[reg].name;
-    str += "\n";
+    stream << "\tmovq\t$" << std::to_string(value) << ", " << reg_table[reg].name << "\n";
 
     return reg;
 };
