@@ -1,5 +1,6 @@
-#include "compile_output.h"
-
+#include "x86_64_compiler_asm.h"
+#include <string.h>
+#include <stdio.h>
 struct compiler_register{
     const char* name;
     bool status;
@@ -13,7 +14,7 @@ compiler_register reg_table[] = {
 };
 
 #define REG_TABLE_SIZE (sizeof(reg_table)/sizeof(compiler_register))
-void output_compiler::init_output(){
+void x86_64_asm_generator::asm_start(){
     str = "\t.text\n"
 	".LC0:\n"
 	"\t.string\t\"%d\\n\"\n"
@@ -37,15 +38,14 @@ void output_compiler::init_output(){
 	"\tpushq\t%rbp\n"
 	"\tmovq	%rsp, %rbp\n";
 }
-void output_compiler::close_output_in_file(const char* out){
+void x86_64_asm_generator::asm_end(){
     str += 
     "\tmovl	$0, %eax\n"
 	"\tpopq	%rbp\n"
 	"\tret\n";
-    printf("output asm: \n %s \n", str.c_str());
 
 }
-int output_compiler::alloc_register(){
+int x86_64_asm_generator::alloc_register(){
     for(int i = 0; i < REG_TABLE_SIZE; i++){
         if(!reg_table[i].status){
             reg_table[i].status = true;
@@ -55,10 +55,29 @@ int output_compiler::alloc_register(){
     printf("can't find free register \n");
     exit(1);
 }
-void output_compiler::free_register(int reg){
+void x86_64_asm_generator::free_register(int reg){
     if(!reg_table[reg].status){
         printf("error trying to free an already free register \n");
         exit(1);
     }
     reg_table[reg].status = false;
 }
+
+
+    int x86_64_asm_generator::gen_add(int left_register, int right_register){};
+     int x86_64_asm_generator::gen_sub(int left_register, int right_register){};
+     int x86_64_asm_generator::gen_mul(int left_register, int right_register) {};
+     int x86_64_asm_generator::gen_div(int left_register, int right_register){};
+    
+int x86_64_asm_generator::gen_load(int value){
+    int reg = alloc_register();
+
+    // waiting for the c++20 format library support
+    str += "\tmovq\t$";
+    str += value;
+    str += ", ";
+    str += reg_table[reg].name;
+    str += "\n";
+    
+    return reg;
+};
