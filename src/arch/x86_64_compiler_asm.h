@@ -8,6 +8,17 @@ class x86_64_asm_generator : public asm_generator{
     void gen_instruction(const char* instruction){
         stream << "\t" << instruction << "\t";
     }
+    void gen_single_line_instruction(const char* instruction){
+        stream << "\t" << instruction << "\n";
+    }
+    void gen_one_arg_instruction(const char* instruction, const char* reg){
+        gen_instruction(instruction);
+        stream << reg << '\n';
+    }
+    void gen_mov(const char* to, const char* from){
+        gen_instruction("movq");
+        stream << from <<  "," << to << "\n";
+    }  
     public:
     virtual void asm_start() override;
     virtual void asm_end() override;
