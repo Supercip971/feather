@@ -99,3 +99,10 @@ int x86_64_asm_generator::gen_load(int value){
 
     return reg;
 };
+int x86_64_asm_generator::gen_debug_print(int reg){
+
+    gen_mov( "%rdi", reg_table[reg].name);
+    gen_one_arg_instruction("call", "printint");
+    free_register(reg);
+    return 0;
+}
