@@ -1,7 +1,6 @@
 
 CFILES := $(shell find src -type f -name \*.cpp)
 HFILES := $(shell find src -type f -name \*.h)
-TST_FILES := $(shell find test -type f)
 OBJFILES := $(patsubst %.cpp, %.o, $(CFILES))
 OUTPUT := "./build/feather"
 %.o: %.cpp $(CFILES) $(HFILES)
@@ -20,9 +19,6 @@ run:
 run_test:
 	./build/feather $(TST_FILES)
 	cat output
-
-test:
-	@echo "not implemented for the moment"
 
 format: 
 	clang-format -i --style=file $(CFILES) $(HFILES)

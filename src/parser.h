@@ -6,11 +6,12 @@ class parser
 {
     scanner current_scanner;
     token current_token;
-    ast_node* start();
-    ast_node* expression(int lprecedence);
+    ast_node *start();
+    ast_node *expression(int lprecedence);
+
 public:
     parser(scanner scanner) : current_scanner(scanner), current_token(token_type::NULL_TOKEN){};
-    ast_node* create_ast_node();
+    ast_node *create_ast_node();
 };
 
 #endif // PARSER_H

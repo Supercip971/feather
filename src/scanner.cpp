@@ -1,12 +1,14 @@
 #include "scanner.h"
 #include <cctype>
 #include <string.h>
-scanner::scanner(){
+scanner::scanner()
+{
     _cursor = 0;
 }
-int scanner::open(const char* path){
+int scanner::open(const char *path)
+{
     std::ifstream file(path, std::ios::binary | std::ios::ate);
-    
+
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
 
@@ -14,15 +16,19 @@ int scanner::open(const char* path){
     if (file.read(_buffer.data(), size))
     {
         return 1;
-    }else{
+    }
+    else
+    {
         printf("[error] scanner: can't read file %s");
         exit(-1);
         return 0;
     }
 }
 
-int scanner::advance(){
-    if(_cursor +1 > _buffer.size()){
+int scanner::advance()
+{
+    if (_cursor + 1 > _buffer.size())
+    {
         return -1; // eof
     }
 
@@ -30,17 +36,20 @@ int scanner::advance(){
     _cursor++;
     return result;
 }
-int scanner::current(){
+int scanner::current()
+{
 
-    if(_cursor +1 > _buffer.size()){
+    if (_cursor + 1 > _buffer.size())
+    {
         return -1; // eof
     }
     return _buffer[_cursor];
-    
 }
-int scanner::eat_current(){
+int scanner::eat_current()
+{
 
-    if(_cursor +1 > _buffer.size()){
+    if (_cursor + 1 > _buffer.size())
+    {
         return -1; // eof
     }
 
@@ -48,21 +57,26 @@ int scanner::eat_current(){
     _buffer.erase(_buffer.begin() + _cursor);
     return result;
 }
-int scanner::skip_space(){
-    while(isspace(current())){
+int scanner::skip_space()
+{
+    while (isspace(current()))
+    {
         advance();
     }
     return 0;
 }
 
-long scanner::next_int(){
+long scanner::next_int()
+{
     std::string v = "";
-    while(isdigit(current())){
+    while (isdigit(current()))
+    {
         v += advance();
     }
     return std::stoi(v);
 }
-token scanner::next_token(){
+token scanner::next_token()
+{
     skip_space();
     char v = current();
     switch (v)
@@ -70,7 +84,7 @@ token scanner::next_token(){
     case '+':
         advance();
         return token(token_type::PLUS);
-    
+
     case '-':
         advance();
         return token(token_type::MINUS);
@@ -78,19 +92,22 @@ token scanner::next_token(){
     case '*':
         advance();
         return token(token_type::STAR);
-    
+
     case '/':
         advance();
-        return token(token_type::SLASH);    
-    
+        return token(token_type::SLASH);
+
     case -1:
         advance();
         return token(token_type::END_OF_STREAM);
 
     default:
-        if(isdigit(v)){
+        if (isdigit(v))
+        {
             return token(token_type::INT_VALUE, next_int());
-        }else{
+        }
+        else
+        {
             printf("unrecognised token: %c (%i) \n", v, v);
             exit(-2);
         }
