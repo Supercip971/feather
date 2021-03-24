@@ -15,10 +15,12 @@ $(OUTPUT): $(OBJFILES)
 
 
 run: 
-	./build/feather
-run_test:
-	./build/feather $(TST_FILES)
-	cat output
+	@echo "[output.s] creating output.s from test.fth"
+	./build/feather ./test.fth
+	@echo "[out] creating final programm from output.s"
+	cc -o out ./output.s
+	@echo "[out] running final programm"
+	./out
 
 format: 
 	clang-format -i --style=file $(CFILES) $(HFILES)
