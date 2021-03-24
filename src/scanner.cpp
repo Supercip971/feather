@@ -141,9 +141,26 @@ token scanner::next_token()
         }
         else
         {
-            printf("unrecognised token: %c (%i) \n", v, v);
+            printf("error: unrecognised token: %c (%i) \n", v, v);
+            print_error_file_information();
             exit(-2);
         }
         break;
     }
+}
+
+void scanner::print_error_file_information()
+{
+    printf("on line: %i ", line() + 1);
+    printf("offset: %i \n", line_character());
+    std::string line_str = "";
+    line_str += std::to_string(line() + 1);
+    line_str += " | ";
+
+    printf("%s%s \n", line_str.c_str(), get_full_line().c_str());
+    for (int i = 0; i < line_character() + line_str.length(); i++)
+    {
+        printf(" ");
+    }
+    printf("\033[1;31m↑\033[0m\n");
 }

@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 
+#include <string>
 class scanner
 {
     const char *_file_path;
@@ -20,6 +21,7 @@ public:
     size_t line() const { return _line; };
     size_t line_character() const { return _line_char; };
 
+    void print_error_file_information();
 
     std::string get_full_line();
 
