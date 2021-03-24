@@ -19,7 +19,6 @@ int main(int argc, char **argv)
     asm_generator *generator = new x86_64_asm_generator();
 
     auto v = par.create_ast_node();
-    v->print();
 
     generator->init_output();
 
@@ -28,5 +27,6 @@ int main(int argc, char **argv)
     generator->close_output_in_file("output.s");
 
     v->destroy();
+    delete generator;
     return 0;
 }
