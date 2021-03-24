@@ -10,11 +10,18 @@ class scanner
     const char *_file_path;
     std::vector<char> _buffer;
     size_t _cursor;
+    size_t _line;
+    size_t _line_char;
 
 public:
     scanner();
     size_t cur() const { return _cursor; };
     int open(const char *path);
+    size_t line() const { return _line; };
+    size_t line_character() const { return _line_char; };
+
+
+    std::string get_full_line();
 
     int advance();
     int current();

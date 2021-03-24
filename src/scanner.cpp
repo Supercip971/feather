@@ -4,6 +4,8 @@
 scanner::scanner()
 {
     _cursor = 0;
+    _line_char = 0;
+    _line = 0;
 }
 int scanner::open(const char *path)
 {
@@ -31,8 +33,17 @@ int scanner::advance()
     {
         return -1; // eof
     }
-
     char result = _buffer[_cursor];
+
+    if (result == '\n')
+    {
+        _line++;
+        _line_char = 0;
+    }
+    else
+    {
+        _line_char++;
+    }
     _cursor++;
     return result;
 }
@@ -74,6 +85,28 @@ long scanner::next_int()
         v += advance();
     }
     return std::stoi(v);
+}
+std::string scanner::get_full_line()
+{
+    size_t current_line = 0;
+    std::string result = "";
+    for (int i = 0; i < _buffer.size(); i++)
+    {
+
+        if (_buffer[i] == '\n')
+        {
+            current_line++;
+        }
+        if (current_line > _line)
+        {
+            return result;
+        }
+        else if (current_line == _line && _buffer[i] != '\n')
+        {
+            result += _buffer[i];
+        }
+    }
+    return result;
 }
 token scanner::next_token()
 {
