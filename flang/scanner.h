@@ -1,11 +1,11 @@
-#ifndef B6BCD645_0842_4B2E_B8FD_1E8527588556
-#define B6BCD645_0842_4B2E_B8FD_1E8527588556
-#include "defs.h"
-#include <fstream>
-#include <memory>
-#include <vector>
+//
+// Created by root on 5/11/21.
+//
 
-#include <string>
+#ifndef FLANG_SCANNER_H
+#define FLANG_SCANNER_H
+#include "cstar_token.h"
+#include <vector>
 class scanner
 {
     const char *_file_path;
@@ -24,14 +24,16 @@ public:
     void print_error_file_information();
 
     std::string get_full_line();
-
     int advance();
     int current();
     int eat_current();
     int skip_space();
+
     token next_token();
     long next_int();
+    std::string next_identifier();
+
     bool eof() const { return _cursor > (_buffer.size() - 1); };
 };
 
-#endif /* B6BCD645_0842_4B2E_B8FD_1E8527588556 */
+#endif //FLANG_SCANNER_H

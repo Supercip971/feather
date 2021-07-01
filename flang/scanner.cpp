@@ -1,6 +1,10 @@
 #include "scanner.h"
-#include <cctype>
-#include <string.h>
+#include <cstring>
+#include <ctype.h>
+#include <fstream>
+#include <string>
+#include <unordered_map>
+
 scanner::scanner()
 {
     _cursor = 0;
@@ -21,7 +25,7 @@ int scanner::open(const char *path)
     }
     else
     {
-        printf("[error] scanner: can't read file %s");
+        printf("[error] scanner: can't read file %s", path);
         exit(-1);
         return 0;
     }
@@ -56,6 +60,27 @@ int scanner::current()
     }
     return _buffer[_cursor];
 }
+
+std::string scanner::next_identifier()
+{
+    std::string result;
+    char cur_char;
+    while (true)
+    {
+
+        cur_char = current();
+        if (isalpha(cur_char) || isdigit(cur_char) || cur_char == '_')
+        {
+            result += cur_char;
+            advance();
+        }
+        else
+        {
+            return result;
+        }
+    }
+}
+
 int scanner::eat_current()
 {
 
@@ -116,28 +141,55 @@ token scanner::next_token()
     {
     case '+':
         advance();
-        return token(token_type::PLUS);
+        return token("+", token_type::PLUS, current());
 
     case '-':
         advance();
-        return token(token_type::MINUS);
+        return token("-", token_type::MINUS, current());
+    case '=':
+        advance();
+        return token("=", token_type::EQUAL, current());
 
     case '*':
         advance();
-        return token(token_type::STAR);
+        return token("*", token_type::STAR, current());
+
+    case ',':
+        advance();
+        return token(",", token_type::COMMA, current());
 
     case '/':
         advance();
-        return token(token_type::SLASH);
+        return token("/", token_type::SLASH, current());
 
+    case ';':
+        advance();
+        return token(";", token_type::SEMICOLON, current());
+    case '(':
+        advance();
+        return token("(", token_type::PARENTHESIS_OPEN, current());
+    case ')':
+        advance();
+        return token(")", token_type::PARENTHESIS_CLOSE, current());
+    case '{':
+        advance();
+        return token("{", token_type::CURLY_START, current());
+    case '}':
+        advance();
+        return token("}", token_type::CURLY_END, current());
     case -1:
         advance();
-        return token(token_type::END_OF_STREAM);
+        return token("end of stream", token_type::END_OF_STREAM, current());
 
     default:
         if (isdigit(v))
         {
-            return token(token_type::INT_VALUE, next_int());
+            return token(std::to_string(next_int()) + "(int)", token_type::INT_VALUE, current());
+        }
+        else if (isalpha(v) || '_' == v)
+        {
+            // return token(token_type::KEYWORD, v);
+            return token(next_identifier(), token_type::KEYWORD, current());
         }
         else
         {
@@ -151,8 +203,8 @@ token scanner::next_token()
 
 void scanner::print_error_file_information()
 {
-    printf("on line: %i ", line() + 1);
-    printf("offset: %i \n", line_character());
+    printf("on line: %zu ", line() + 1);
+    printf("offset: %zu \n", line_character());
     std::string line_str = "";
     line_str += std::to_string(line() + 1);
     line_str += " | ";
