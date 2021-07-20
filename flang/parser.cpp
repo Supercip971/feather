@@ -29,6 +29,7 @@ ast_node parser::math_expression(size_t lprecedence, std::set<token_type> end)
         }
         else if (right.type() == AST_KEYWORD && current().type() == PARENTHESIS_OPEN)
         {
+            next_node(); // skip func[(])
             right = parse_function_call(right);
         }
 
