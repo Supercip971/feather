@@ -1,1 +1,20 @@
-int i = 0;
+int func(int v, int w)
+{
+    int v = 0;
+
+    int a = 0;
+
+    int b = a + v;  
+
+
+    uwu(v + 1 + owo(10, 10),b); 
+
+    if(10+10)
+    {
+        int v = 10;
+    }
+    elif(v + 1)
+    {
+        int v = 10;
+    }
+}

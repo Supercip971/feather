@@ -25,6 +25,22 @@ enum ast_types
     AST_CODE = 18,
     AST_FUNC_CALL = 19,
     AST_COMMA = 20, // ,
+    AST_IF = 21,
+    AST_ELSEIF = 22,
+    AST_ELSE = 23,
+    AST_WHILE = 24,
+    AST_FOR = 25,
+    AST_RETURN = 26,
+    AST_BREAK = 27,
+    AST_CONTINUE = 28,
+    AST_COND_EQUAL = 29,
+    AST_COND_NEQUAL = 30,
+    AST_COND_SUPERIOR = 31,
+    AST_COND_INFERIOR = 32,
+    AST_COND_SUPERIOR_EQUAL = 33,
+    AST_COND_INFERIOR_EQUAL = 34,
+    
+
 };
 
 int precedence_from_ast_type(ast_types type);

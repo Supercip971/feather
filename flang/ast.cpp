@@ -56,6 +56,12 @@ std::string ast_type_to_str(ast_types type)
         return "function call";
     case AST_COMMA:
         return "comma";
+    case AST_IF:
+        return "if";
+    case AST_ELSEIF:
+        return "elif";
+    case AST_ELSE:
+        return "else";
     default:
         return "not detected type";
     }

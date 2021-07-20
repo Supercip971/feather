@@ -20,6 +20,7 @@ class parser
     ast_node next_node();
     ast_node parse_code();
 
+    ast_node parse_condition_block(ast_node block_type);
     ast_node parse_argument_declaration();
     ast_node parse_function_declaration(ast_node return_type, ast_node name);
     ast_node parse_function_call(ast_node name);

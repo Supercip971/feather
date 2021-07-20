@@ -89,6 +89,7 @@ ast_node parser::parse_argument_declaration()
     }
     return final;
 }
+
 ast_node parser::parse_code()
 {
     ast_node final_code = ast_node(ast_types::AST_CODE);
@@ -129,6 +130,44 @@ ast_node parser::parse_function_declaration(ast_node return_type, ast_node name)
     return final_node;
 }
 
+ast_node parser::parse_condition_block(ast_node block_type)
+{
+
+    ast_node final_node;
+
+    if (block_type.token().raw() == "if")
+    {
+        final_node = ast_node(block_type.token(), ast_types::AST_IF);
+    }
+    else if (block_type.token().raw() == "elif")
+    {
+        final_node = ast_node(block_type.token(), ast_types::AST_ELSEIF);
+    }
+    else if (block_type.token().raw() == "else")
+    {
+        final_node = ast_node(block_type.token(), ast_types::AST_ELSE);
+    }
+    ast_node arg = math_expression(precedence_from_ast_type(ast_types::AST_PARENTHESIS_END), {token_type::PARENTHESIS_CLOSE});
+
+    final_node.add_node(arg);
+    next_node();
+
+    if (current().type() == token_type::CURLY_START)
+    {
+        next_node();
+        final_node.add_node(parse_code());
+    }
+    else
+    {
+
+        printf("expected '{' after condition \n");
+        current().debug_print();
+        exit(1);
+    }
+
+    return final_node;
+}
+
 ast_node parser::parse_function_call(ast_node func_name)
 {
     ast_node final_node = ast_node(func_name.token(), ast_types::AST_FUNC_CALL);
@@ -157,6 +196,24 @@ ast_node parser::parse_function_call(ast_node func_name)
 
     return final_node;
 }
+
+bool is_str_a_cond_block_keyword(const std::string &str)
+{
+    if (str == "if")
+    {
+        return true;
+    }
+    if (str == "elif")
+    {
+        return true;
+    }
+    if (str == "else")
+    {
+        return true;
+    }
+    return false;
+}
+
 ast_node parser::expression()
 {
 
@@ -168,7 +225,11 @@ ast_node parser::expression()
 
         auto second = next_node();
 
-        if (second.type() == AST_PARENTHESIS_START)
+        if (second.type() == AST_PARENTHESIS_START && is_str_a_cond_block_keyword(left.token().raw()))
+        {
+            return parse_condition_block(left);
+        }
+        else if (second.type() == AST_PARENTHESIS_START)
         {
             // function call
             return parse_function_call(left);

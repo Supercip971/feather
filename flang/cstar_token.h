@@ -55,4 +55,6 @@ public:
         printf("token: %s on %zu type: %i \n", _raw.c_str(), _position, _id);
     }
 };
+
+
 #endif //FLANG_CSTAR_TOKEN_H
