@@ -1,3 +1,4 @@
+---
 
 BasedOnStyle: LLVM
 UseTab: Never
@@ -8,5 +9,18 @@ AllowShortIfStatementsOnASingleLine: false
 IndentCaseLabels: false
 ColumnLimit: 0
 AccessModifierOffset: -4
-NamespaceIndentation: All
-MaxEmptyLinesToKeep: 1 
+FixNamespaceComments: true
+SpaceBeforeInheritanceColon: true
+BreakInheritanceList: AfterColon
+IndentPPDirectives: AfterHash
+ForEachMacros: ["__dummy_foreach"]
+SpaceBeforeParens: ControlStatementsExceptForEachMacros
+IncludeBlocks: Merge
+IncludeCategories:
+  - Regex:           '<([:alnum:.\/-_])+>'
+    Priority:        0
+    SortPriority:    0
+  - Regex:           '"([:alnum:.\/-_])+"'
+    Priority:        10
+    SortPriority:    10
+...
