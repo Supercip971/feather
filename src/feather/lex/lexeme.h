@@ -1,5 +1,5 @@
 #pragma once
-#include <feather/filebuf/filebuf.h>
+#include <feather/scanner/scanner.h>
 #include <feather/utils/str.h>
 #include <feather/utils/vec.h>
 
@@ -107,6 +107,6 @@ typedef struct
     vec_t(Str) str_list;
 } Lexemes;
 
-bool parse_lexemes(Lexemes *self, FileBuf *buf);
+bool parse_lexemes(Lexemes *self, Scanner *buf);
 
 Str lexeme_to_str(LexemeType type);

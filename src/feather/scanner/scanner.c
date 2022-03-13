@@ -1,24 +1,24 @@
 #include <string.h>
-#include <feather/filebuf/filebuf.h>
+#include <feather/scanner/scanner.h>
 
-void fbuf_init(FileBuf* self, void* data, size_t size)
+void fscan_init(Scanner* self, void* data, size_t size)
 {
     self->buffer = data;
     self->cur = 0;
     self->size = size;
 }
 
-void fbuf_deinit(FileBuf* self)
+void fscan_deinit(Scanner* self)
 {
     (void)self;
 }
 
-bool fbuf_skip(FileBuf* self, Str str)
+bool fscan_skip(Scanner* self, Str str)
 {
     for (size_t i = 0; i < str.len; i++)
     {
         if(self->buffer[self->cur + i] != str.buf[i]
-            || fbuf_ended(self))
+            || fscan_ended(self))
         {
             return false;
         }
@@ -29,11 +29,11 @@ bool fbuf_skip(FileBuf* self, Str str)
     return true;
 }
 
-Str fbuf_skip_until(FileBuf* self, fbuf_char_fn* fn)
+Str fscan_skip_until(Scanner* self, fscan_char_fn* fn)
 {
     size_t begin = self->cur;
 
-    while(fn(self->buffer[self->cur]) && !fbuf_ended(self))
+    while(fn(self->buffer[self->cur]) && !fscan_ended(self))
     {
         self->cur++;
     }
@@ -44,22 +44,22 @@ Str fbuf_skip_until(FileBuf* self, fbuf_char_fn* fn)
     };
 }
 
-int fbuf_cur(FileBuf* self)
+int fscan_cur(Scanner* self)
 {
     return self->cur;
 }
 
-bool fbuf_ended(FileBuf* self)
+bool fscan_ended(Scanner* self)
 {
     return (size_t)self->cur >= (self->size);
 }
 
-char fbuf_current(FileBuf* self)
+char fscan_current(Scanner* self)
 {
     return self->buffer[self->cur];
 }
 
-char fbuf_next(FileBuf* self)
+char fscan_next(Scanner* self)
 {
     self->cur++;
     return self->buffer[self->cur - 1];

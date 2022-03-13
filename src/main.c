@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <feather/filebuf/filebuf.h>
+#include <feather/scanner/scanner.h>
 #include <feather/lex/lexeme.h>
 #include <feather/utils/log.h>
 
 
-FileBuf file_read(const char* path)
+Scanner file_read(const char* path)
 {
     void* buf;
     FILE* f = fopen(path, "r");
@@ -19,9 +19,9 @@ FileBuf file_read(const char* path)
     fread(buf, size, 1, f);
     fclose(f);
 
-    FileBuf fbuf = {};
-    fbuf_init(&fbuf, buf, size);
-    return fbuf;
+    Scanner fscan = {};
+    fscan_init(&fscan, buf, size);
+    return fscan;
 }
 
 int main(int argc, char** argv)
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    FileBuf buf = file_read(argv[1]);
+    Scanner buf = file_read(argv[1]);
 
     Lexemes lex;
 

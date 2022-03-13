@@ -6,12 +6,12 @@
 
 Str lexeme_table[] = {LEXEME_FOREACH(LEXEME_FOREACH_TABLE)};
 
-static LexemeType parse_lexeme_type(FileBuf *buf)
+static LexemeType parse_lexeme_type(Scanner *buf)
 {
 
     if (isspace(buf->buffer[buf->cur]))
     {
-        fbuf_skip_until(buf, &isspace);
+        fscan_skip_until(buf, &isspace);
         return LEX_WHITESPACE;
     }
 
@@ -32,24 +32,24 @@ static LexemeType parse_lexeme_type(FileBuf *buf)
         }
     }
 
-    if (isalpha(fbuf_current(buf)))
+    if (isalpha(fscan_current(buf)))
     {
-        fbuf_skip_until(buf, &isalnum);
+        fscan_skip_until(buf, &isalnum);
 
         return LEX_IDENT;
     }
 
-    if (isdigit(fbuf_current(buf)))
+    if (isdigit(fscan_current(buf)))
     {
-        fbuf_skip_until(buf, &isdigit);
+        fscan_skip_until(buf, &isdigit);
 
         return LEX_INTEGER;
     }
 
-    if (fbuf_current(buf) == '"')
+    if (fscan_current(buf) == '"')
     {
-        fbuf_next(buf);
-        while (fbuf_next(buf) != '"' && !fbuf_ended(buf))
+        fscan_next(buf);
+        while (fscan_next(buf) != '"' && !fscan_ended(buf))
         {
         }
         return LEX_STRING;
@@ -58,12 +58,12 @@ static LexemeType parse_lexeme_type(FileBuf *buf)
     return LEX_NONE;
 }
 
-bool parse_lexemes(Lexemes *self, FileBuf *buf)
+bool parse_lexemes(Lexemes *self, Scanner *buf)
 {
     vec_init(&self->lexemes);
     vec_init(&self->str_list);
 
-    while (!fbuf_ended(buf))
+    while (!fscan_ended(buf))
     {
         int beg = buf->cur;
         LexemeType type = parse_lexeme_type(buf);
